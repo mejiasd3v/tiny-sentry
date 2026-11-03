@@ -193,16 +193,17 @@ export async function runUploader(args: string[], env: Record<string, string | u
       const raw: unknown = JSON.parse(content.toString("utf8"));
       if (selection === "app" && !applicationSources(raw)) { skipped.vendor_or_empty++; continue; }
       const map = parseSourceMap(content);
-      const linked = references.get(file);
-      if (linked && linked.length > 1) throw new Error("One map referenced by multiple generated JS files requires explicit API aliases");
-      const js = linked?.[0] ?? generated.get(file.slice(0, -4));
-      if (map.debugId && js?.id && map.debugId !== js.id) throw new Error("Generated JS and source map have conflicting Debug IDs");
-      const id = map.debugId ?? js?.id;
-      const name = relative(root, js?.path ?? file.slice(0, -4)).replaceAll("\\", "/");
-      const url = next ? name.startsWith("static/") ? `~/_next/${name}` : `app:///_next/${name}`
-        : release ? `${(options.get("--url-prefix") ?? "~/").replace(/\/$/, "")}/${name}` : undefined;
-      if (!id && !release) throw new Error("Map needs a Debug ID or release/URL identity");
-      selected.push({ path: file, file: relative(root, file).replaceAll("\\", "/"), generated_file: js ? name : undefined, sha256: hash(content), raw: content.length, compressed: gzipSync(content).length, decoded: map.weight, indexed: object(raw) && raw.sections !== undefined, debugId: id, url });
+      const targets = references.get(file) ?? [generated.get(file.slice(0, -4))];
+      const compressed = gzipSync(content).length, sha256 = hash(content);
+      for (const js of targets) {
+        if (map.debugId && js?.id && map.debugId !== js.id) throw new Error("Generated JS and source map have conflicting Debug IDs");
+        const id = map.debugId ?? js?.id;
+        const name = relative(root, js?.path ?? file.slice(0, -4)).replaceAll("\\", "/");
+        const url = next ? name.startsWith("static/") ? `~/_next/${name}` : `app:///_next/${name}`
+          : release ? `${(options.get("--url-prefix") ?? "~/").replace(/\/$/, "")}/${name}` : undefined;
+        if (!id && !release) throw new Error("Map needs a Debug ID or release/URL identity");
+        selected.push({ path: file, file: relative(root, file).replaceAll("\\", "/"), generated_file: js ? name : undefined, sha256, raw: content.length, compressed, decoded: map.weight, indexed: object(raw) && raw.sections !== undefined, debugId: id, url });
+      }
     } catch (error) { errors.push({ file: relative(root, file), message: error instanceof Error ? error.message : "Cannot inspect map" }); }
   }
   if (!selected.length) errors.push({ message: "No selected JavaScript maps found" });
@@ -224,6 +225,7 @@ export async function runUploader(args: string[], env: Record<string, string | u
   let additionalBytes = 0, additionalMaps = 0, additionalAliases = 0;
   const seen = new Set<string>();
   const debugIds = new Map<string, string>();
+  const aliases = new Map<string, string>();
   for (const map of selected) {
     if (map.debugId) {
       if (debugIds.has(map.debugId) && debugIds.get(map.debugId) !== map.sha256) errors.push({ file: map.file, message: "Build contains one Debug ID with conflicting map content" });
@@ -237,16 +239,20 @@ export async function runUploader(args: string[], env: Record<string, string | u
     const aliasOwner = release && inventory?.sourcemaps.find((entry) => entry.releases.some((alias) => alias.release === release && alias.dist === dist && alias.url === map.url));
     if (aliasOwner && aliasOwner.id !== existing?.id) errors.push({ file: map.file, message: "Release/dist/URL conflict with stored content (HTTP 409)" });
     const identity = `${map.debugId ?? ""}:${map.sha256}`;
+    if (release && map.url) {
+      if (aliases.has(map.url) && aliases.get(map.url) !== identity) errors.push({ file: map.file, message: "Build contains conflicting maps for one release/dist/URL" });
+      if (!aliases.has(map.url) && !existing?.releases.some((alias) => alias.release === release && alias.dist === dist && alias.url === map.url)) additionalAliases++;
+      aliases.set(map.url, identity);
+    }
     if (!existing && !seen.has(identity)) { additionalBytes += map.compressed; additionalMaps++; seen.add(identity); }
-    if (release && !existing?.releases.some((alias) => alias.release === release && alias.dist === dist && alias.url === map.url)) additionalAliases++;
   }
   const storage = inventory?.storage;
   if (storage && storage.count + additionalMaps > storage.max_maps) errors.push({ message: "Projected artifacts exceed SOURCEMAPS_MAX_ARTIFACTS; shorten retention deliberately, choose app selection, or raise the cap" });
   if (storage && storage.bytes + additionalBytes > storage.max_bytes) errors.push({ message: "Projected compressed storage exceeds SOURCEMAPS_MAX_STORAGE_MB" });
   if (storage && storage.release_aliases + additionalAliases > storage.max_release_aliases) errors.push({ message: "Projected aliases exceed SOURCEMAPS_MAX_RELEASE_ALIASES" });
-  const report = { mode: inventory ? "collector-preflight" : "offline-default-limits", project, release, selection, scanned: files.length, selected: selected.length,
+  const report = { mode: inventory ? "collector-preflight" : "offline-default-limits", project, release, selection, scanned: files.length, selected: selected.length, selected_maps: new Set(selected.map((map) => map.path)).size,
     skipped, indexed: selected.filter((map) => map.indexed).length, without_generated_file: selected.filter((map) => !map.generated_file).length, without_debug_id: selected.filter((map) => !map.debugId).length,
-    raw_bytes: selected.reduce((sum, map) => sum + map.raw, 0), estimated_additional_maps: additionalMaps, estimated_additional_compressed_bytes: additionalBytes,
+    raw_bytes: selected.reduce((sum, map) => sum + map.raw, 0), estimated_additional_maps: additionalMaps, estimated_additional_compressed_bytes: additionalBytes, estimated_additional_aliases: additionalAliases,
     storage, limits, public_maps_to_delete: flags.has("--delete-public-maps") ? publicMaps.size : 0, errors,
     files: selected.map(({ path: _path, ...map }) => map), blocked: errors.length > 0 };
   if (flags.has("--dry-run")) return report;

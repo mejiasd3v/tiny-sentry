@@ -20,6 +20,8 @@ async function output() {
   await writeFile(join(browser, "hashed-map.js.map"), JSON.stringify(leaf("turbopack:///[project]/apps/web/app.js")));
   await writeFile(join(browser, "app.js"), '// unchanged browser bytes\n//# debugId=12345678-1234-1234-1234-123456789abc\n//# sourceMappingURL=hashed-map.js.map');
   await writeFile(join(browser, "vendor.js.map"), JSON.stringify(leaf("turbopack:///[project]/node_modules/vendor/index.js")));
+  await writeFile(join(browser, "vendor.js"), "// vendor\n//# sourceMappingURL=vendor.js.map");
+  await writeFile(join(browser, "vendor-copy.js"), "// another reference\n//# sourceMappingURL=vendor.js.map");
   await writeFile(join(browser, "style.css.map"), "{}");
   await writeFile(join(server, "page.js.map"), JSON.stringify({ version: 3, sections: [{ offset: { line: 1, column: 0 }, map: leaf("../app/page.js") }] }));
   await writeFile(join(server, "page.js"), "// unchanged server bytes");
@@ -105,5 +107,21 @@ test("preflight blocks a full collector before uploading or deleting maps", asyn
     expect(result.exit).toBe(1); expect(result.err).toContain("SOURCEMAPS_MAX_ARTIFACTS"); expect(posts).toBe(0);
     expect(store.sourceMaps!.list("1", 100, 0).sourcemaps).toHaveLength(0);
     expect(await Bun.file(join(f.browser, "hashed-map.js.map")).exists()).toBe(true);
+  } finally { await server.stop(true); store.close(); }
+});
+
+test("shared Turbopack maps upload every generated filename alias without duplicating the blob", async () => {
+  const f = await output();
+  const config = loadConfig({ ADMIN_TOKEN: admin, SENTRY_PROJECTS: JSON.stringify({ "1": key }), DB_PATH: ":memory:", SOURCEMAPS_ENABLED: "true" });
+  const store = new Store(config), app = createApp(config, store);
+  const server = Bun.serve({ port: 0, fetch: app.fetch });
+  try {
+    const result = await cli(f.dist, `http://127.0.0.1:${server.port}`, ["--selection", "all"]);
+    expect(result.err).toBe(""); expect(result.exit).toBe(0);
+    expect(JSON.parse(result.out)).toMatchObject({ selected: 4, selected_maps: 3, uploaded: 4 });
+    const inventory = store.sourceMaps!.list("1", 100, 0);
+    expect(inventory.storage.count).toBe(3);
+    expect(inventory.sourcemaps.find((map) => map.releases.length === 2)?.releases.map((alias) => alias.url).sort())
+      .toEqual(["~/_next/static/chunks/vendor-copy.js", "~/_next/static/chunks/vendor.js"]);
   } finally { await server.stop(true); store.close(); }
 });
