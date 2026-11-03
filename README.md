@@ -10,7 +10,7 @@ The button opens Railway's GitHub deploy flow. Select `mejiasd3v/tiny-sentry`, t
 
 ## Start locally
 
-Requires [Bun](https://bun.sh) 1.4.2 or newer.
+Requires [Bun](https://bun.sh) 1.4.4 or newer.
 
 ```sh
 git clone https://github.com/mejiasd3v/tiny-sentry.git

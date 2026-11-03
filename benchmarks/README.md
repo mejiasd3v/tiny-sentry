@@ -64,7 +64,7 @@ The final main database was about **99.3 MiB**, plus approximately **4 MiB of WA
 
 ## Reproduce tiny-sentry's memory measurements
 
-Requires Bun 1.4.2+, Docker, and enough temporary disk space for three databases. No benchmark packages are installed. Run from the repository root:
+Requires Bun 1.4.4+, Docker, and enough temporary disk space for three databases. No benchmark packages are installed. The published measurements above used Bun 1.4.2; they have not been rerun on 1.4.4. Use the recorded source commit and runtime for those historical results. Run from the repository root to measure the current version:
 
 ```sh
 bun install --frozen-lockfile

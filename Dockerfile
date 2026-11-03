@@ -1,9 +1,9 @@
-FROM oven/bun:1.4.2-alpine AS dependencies
+FROM oven/bun:1.4.4-alpine AS dependencies
 WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile --production
 
-FROM oven/bun:1.4.2-alpine
+FROM oven/bun:1.4.4-alpine
 WORKDIR /app
 ENV NODE_ENV=production \
     DB_PATH=/data/tiny-sentry.sqlite \
