@@ -15,6 +15,7 @@ const help = `tiny-sentry CLI
   bun run cli integrations
   bun run cli deliveries [--limit 25] [--offset 0]
   bun run cli retry-delivery <delivery-id>
+  bun run cli sourcemaps next <.next-directory> --project 1 [--release web@sha] [--dry-run] [--delete-public-maps]
   bun run cli sourcemaps upload <directory> --project 1 [--release web@sha] [--dist web] [--url-prefix '~/assets/']
   bun run cli sourcemaps list --project 1 [--limit 25] [--offset 0]
   bun run cli sourcemaps delete <UUID> --project 1
@@ -41,7 +42,9 @@ async function main() {
   };
   if (command === "sourcemaps") {
     const { sourceMapsCommand } = await import("./sourcemaps/cli");
-    console.log(JSON.stringify(await sourceMapsCommand([argument, ...options].filter((value): value is string => value !== undefined), url, init), null, 2));
+    const result = await sourceMapsCommand([argument, ...options].filter((value): value is string => value !== undefined), url, init);
+    console.log(JSON.stringify(result, null, 2));
+    if (result && typeof result === "object" && "blocked" in result && result.blocked) process.exitCode = 2;
     return;
   }
   let path: string;

@@ -77,7 +77,7 @@ Sentry.captureException(new Error("Something broke"));
 await Sentry.flush(5000);
 ```
 
-Browser DSNs are public. Use your framework's public environment variable for the DSN; **never expose `ADMIN_TOKEN` to a browser**. With Next.js, keep the normal Sentry client/server setup and replace the DSNs in both. Replace Sentry source-map upload jobs with the optional [tiny-sentry uploader](docs/sourcemaps.md); Sentry's artifact upload APIs are separate and are not implemented.
+Browser DSNs are public. Use your framework's public environment variable for the DSN; **never expose `ADMIN_TOKEN` to a browser**. With Next.js, keep the normal Sentry client/server setup and replace the DSNs in both. Use the [Next.js build/upload recipe](docs/nextjs.md) for shared releases and private maps; Sentry's artifact upload APIs are separate and are not implemented.
 
 ### Python
 
@@ -122,7 +122,7 @@ This replaces **Sentry error ingestion**, not all of Sentry. Transactions, spans
 
 ## Source maps
 
-Set `SOURCEMAPS_ENABLED=true` on the server to enable private JavaScript/TypeScript source maps. Upload the exact production maps from CI before deployment, using the admin token. Run from a tiny-sentry checkout:
+Set `SOURCEMAPS_ENABLED=true` on the server to enable private JavaScript/TypeScript source maps. Upload the exact production maps from CI before deployment, using a private admin token. The [Next.js recipe](docs/nextjs.md) uses a standalone Node 22 helper with indexed-map support, application-map selection, preflight, bounded 429 retries, and private cleanup. No Bun checkout or dependencies are needed in consuming apps. Generic uploads are also available from a tiny-sentry checkout:
 
 ```sh
 bun run cli sourcemaps upload ../my-app/dist --project 1 --release web@your-commit-sha --url-prefix '~/'
@@ -246,6 +246,6 @@ docker build -t tiny-sentry:verify .
 bun run test:container
 ```
 
-Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, consistent backups, integration triggers and recovery, and mapping real bundled errors through CLI uploads. See the [integration verification scope](docs/integrations.md#verification-scope) and [source map verification scope](docs/sourcemaps.md#verification-scope) for compatibility limits. The container check verifies Linux startup, separate SDK/map body limits, graceful stop, and event/outbox/map persistence across container recreation. CI runs both. The real-SDK smoke checks described above used temporary installations outside this repository; Sentry SDKs are not service dependencies.
+Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, consistent backups, integration triggers and recovery, and mapping real bundled errors through CLI uploads. See the [integration verification scope](docs/integrations.md#verification-scope) and [source map verification scope](docs/sourcemaps.md#verification-scope) for compatibility limits. The container check verifies Linux startup, separate SDK/map body limits, graceful stop, and event/outbox/map persistence across container recreation. CI runs both. The isolated Next.js SDK fixture is installed only for its dedicated verification; Sentry SDKs are not service dependencies. Earlier real-SDK smoke checks used temporary installations outside this repository.
 
 MIT licensed. This project is independent of Sentry and is not affiliated with or endorsed by Sentry.

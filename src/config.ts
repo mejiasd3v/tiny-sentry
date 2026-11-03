@@ -17,7 +17,7 @@ export interface Config {
   integrations: IntegrationRule[];
   integrationsModule?: string;
   maxDeliveries: number;
-  sourceMaps?: { maxUploadBytes: number; maxStorageBytes: number; cacheBytes: number; retentionDays: number };
+  sourceMaps?: { maxUploadBytes: number; maxStorageBytes: number; cacheBytes: number; retentionDays: number; maxArtifacts: number; maxAliases: number };
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
@@ -74,6 +74,8 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
       maxStorageBytes: integer("SOURCEMAPS_MAX_STORAGE_MB", 64, 1024) * 1024 * 1024,
       cacheBytes: integer("SOURCEMAPS_CACHE_MB", 16, 128) * 1024 * 1024,
       retentionDays: integer("SOURCEMAPS_RETENTION_DAYS", 30, 3650),
+      maxArtifacts: integer("SOURCEMAPS_MAX_ARTIFACTS", 1000, 100_000),
+      maxAliases: integer("SOURCEMAPS_MAX_RELEASE_ALIASES", 10_000, 1_000_000),
     } : undefined,
   };
 }

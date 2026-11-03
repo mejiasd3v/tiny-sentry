@@ -81,7 +81,7 @@ test("private uploads are optional, admin-only, and validate formats and bounded
   }
   expect((await f.upload(sourceMap(), "", "99")).status).toBe(404);
   for (const invalid of [
-    { ...sourceMap(), version: 2 }, { version: 3, sections: [] }, { ...sourceMap(), sources: [123] },
+    { ...sourceMap(), version: 2 }, { version: 3, sections: [{ url: "https://example/map" }] }, { ...sourceMap(), sources: [123] },
     { ...sourceMap(), sourcesContent: [12] }, { ...sourceMap(), mappings: "AA" }, { ...sourceMap(), mappings: "AACA," },
     { ...sourceMap(), mappings: "ACAA" }, { ...sourceMap(), mappings: "AAAAE" }, { ...sourceMap(), mappings: "AAAA,-" },
     { ...sourceMap(), mappings: "AAAA,DAAA" }, { ...sourceMap(), mappings: "A".repeat(20) },
@@ -101,6 +101,38 @@ test("private uploads are optional, admin-only, and validate formats and bounded
   expect(listed.sourcemaps).toHaveLength(1);
   expect(JSON.stringify(listed)).not.toContain("source-context-only");
   expect(JSON.stringify(listed)).not.toContain("sourcesContent");
+});
+
+test("indexed maps handle nested offsets and section boundaries, with bounded local sections only", async () => {
+  const f = fixture();
+  const leaf = (name: string) => ({ version: 3, sources: [name], names: [], mappings: "AAAA", sourcesContent: ["throw new Error();"] });
+  const indexed = { version: 3, debug_id: debug, sections: [
+    { offset: { line: 0, column: 5 }, map: leaf("first.ts") },
+    { offset: { line: 2, column: 3 }, map: { version: 3, sections: [{ offset: { line: 1, column: 2 }, map: leaf("second.ts") }] } },
+  ] };
+  expect((await f.upload(indexed)).status).toBe(201);
+  const input = event();
+  input.exception.values[0]!.stacktrace.frames = [[1, 5], [1, 6], [3, 4], [4, 3]].map(([lineno, colno]) =>
+    ({ filename: "https://cdn.example/assets/app.js", function: "a", lineno: lineno!, colno: colno!, in_app: true }));
+  await f.send(input);
+  const frames = (await details(f)).symbolication.frames;
+  expect(frames.map((frame: { status: string }) => frame.status)).toEqual(["unmapped", "mapped", "unmapped", "mapped"]);
+  expect(frames[1].mapped.filename).toBe("first.ts");
+  expect(frames[3].mapped).toMatchObject({ filename: "second.ts", lineno: 1, colno: 1 });
+  for (const sections of [
+    [{ offset: { line: 0, column: 0 }, url: "https://example/map" }],
+    [{ offset: { line: -1, column: 0 }, map: leaf("bad.ts") }],
+    [indexed.sections[1], indexed.sections[0]],
+    Array.from({ length: 1001 }, (_, line) => ({ offset: { line, column: 0 }, map: leaf("too-many.ts") })),
+  ]) expect((await f.upload({ version: 3, sections, debug_id: secondDebug })).status).toBe(400);
+  expect((await f.upload({ version: 3, sections: [], debug_id: secondDebug })).status).toBe(201);
+  let nested: unknown = leaf("deep.ts");
+  for (let depth = 0; depth < 9; depth++) nested = { version: 3, sections: [{ offset: { line: 0, column: 0 }, map: nested }] };
+  expect((await f.upload(nested)).status).toBe(400);
+  const small = fixture({}, { SOURCEMAPS_CACHE_MB: "1" });
+  const sections = [0, 1].map((line) => ({ offset: { line, column: 0 }, map: { ...leaf("large.ts"), sourcesContent: ["x".repeat(300_000)] } }));
+  // Each section fits independently; their shared decoded budget must still reject the upload.
+  expect((await small.upload({ version: 3, sections, debug_id: debug })).status).toBe(413);
 });
 
 test("Debug IDs map exception, message and thread stacks without mutating events or regrouping", async () => {

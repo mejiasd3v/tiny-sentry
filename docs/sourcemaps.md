@@ -15,8 +15,10 @@ Set `SOURCEMAPS_ENABLED=true` and restart. On Railway, keep the existing single 
 | `SOURCEMAPS_MAX_STORAGE_MB` | `64` | Total compressed map bytes across projects, in MiB; maximum 1024 |
 | `SOURCEMAPS_CACHE_MB` | `16` | Accounted decoded cache and per-event map budget, in MiB; maximum 128 |
 | `SOURCEMAPS_RETENTION_DAYS` | `30` | Expiry since last successful upload; maximum 3650 days |
+| `SOURCEMAPS_MAX_ARTIFACTS` | `1000` | Global artifact count; maximum 100,000 |
+| `SOURCEMAPS_MAX_RELEASE_ALIASES` | `10000` | Global alias count; maximum 1,000,000 |
 
-At most 1000 artifacts and 10,000 release aliases are retained across projects. Unchanged chunks can share one map blob across releases and URLs. The map cap also shares `MAX_DB_MB` with errors and integration deliveries. Leave database and volume headroom. Reaching a storage cap returns HTTP 507 and preserves existing artifacts; unexpired maps are not silently evicted.
+By default, at most 1,000 artifacts and 10,000 release aliases are retained across projects. Unchanged chunks can share one map blob across releases and URLs. The map cap also shares `MAX_DB_MB` with errors and integration deliveries. Leave database and volume headroom. Reaching a storage cap returns HTTP 507 and preserves existing artifacts; unexpired maps are not silently evicted.
 
 Expired maps are deleted at startup, hourly, and during uploads while the feature is enabled. Reads stop matching expired maps immediately. Disabling the feature preserves the stored maps and stops their maintenance until it is enabled again. Retain maps for at least as long as the deployments you still use, including cached browser assets and rollback versions. Event retention does not delete maps.
 
@@ -24,7 +26,7 @@ Expired maps are deleted at startup, hourly, and during uploads while the featur
 
 Build with external source maps and upload the exact production artifacts **before deploying**. Keep `.map` files out of the public assets you serve if you want the original source to stay private. Generate `sourcesContent` to get source snippets; maps without it still provide locations.
 
-Run the uploader from a tiny-sentry checkout with its dependencies installed. Point it at your application's output directory:
+For Next.js, use the [official Node build/upload recipe](nextjs.md), including application-map selection, preflight, shared release configuration, and private cleanup. The standalone `tools/upload-sourcemaps.mjs` needs only Node 22, with no checkout dependencies; pin its downloaded revision. Generic builds can use `node upload-sourcemaps.mjs upload ...`. The Bun CLI in a tiny-sentry checkout uses the same implementation:
 
 ```sh
 export TINY_SENTRY_URL=https://your-service.up.railway.app
@@ -40,7 +42,7 @@ bun run cli sourcemaps list --project 1
 bun run cli sourcemaps delete <artifact-UUID> --project 1
 ```
 
-The CLI recursively uploads `.map` files, sequentially and gzip-compressed. It assumes `assets/app.js.map` belongs to `assets/app.js`. `--url-prefix '~/'` produces `~/assets/app.js`, matching that path on any HTTP(S) origin. Set an absolute prefix, such as `https://cdn.example/static/`, if the emitted directory is served under `/static/`. It never guesses by basename. Unusual map filenames require the direct API instead.
+The CLI preflights and recursively uploads `.map` files, sequentially and gzip-compressed. Use `--dry-run` to inspect the plan without writes. Transient HTTP responses, including 429 and `Retry-After`, have bounded retries; 409 and 507 fail immediately. It follows local generated `sourceMappingURL` references, including Turbopack's independently hashed map names. Without a reference it assumes `assets/app.js.map` belongs to `assets/app.js`; preflight reports missing generated files. `--url-prefix '~/'` produces `~/assets/app.js`, matching that path on any HTTP(S) origin. Set an absolute prefix, such as `https://cdn.example/static/`, if the emitted directory is served under `/static/`. It never guesses by basename. Maps shared by several generated JS files require explicit direct API aliases.
 
 Set the **same release** on the application's Sentry SDK:
 
@@ -79,7 +81,7 @@ All endpoints require `Authorization: Bearer <ADMIN_TOKEN>` and have no browser 
 | Method | Path | Result |
 | --- | --- | --- |
 | POST | `/api/projects/:project/sourcemaps` | Upload one raw JSON source map; returns artifact metadata with HTTP 201 |
-| GET | `/api/projects/:project/sourcemaps?limit=25&offset=0` | Metadata, global compressed storage usage, and caps; no map content |
+| GET | `/api/projects/:project/sourcemaps?limit=25&offset=0` | Metadata, global compressed storage usage, caps, and upload/decoded/retention/indexed-map limits; no map content |
 | DELETE | `/api/projects/:project/sourcemaps/:id` | Delete that project's artifact and invalidate its cache |
 
 Artifact listings include up to 25 recent release aliases per map, plus `release_count` and `releases_truncated`. Deleting an artifact removes all its release aliases, including aliases used by other deployments; it does not delete any error events.
@@ -96,7 +98,7 @@ curl --fail-with-body --request POST \
   "$TINY_SENTRY_URL/api/projects/1/sourcemaps?release=web%40abc&url=~%2Fassets%2Fapp.js"
 ```
 
-Upload URLs are logical artifact names; they never become filesystem paths. HTTP(S) query strings/fragments are stripped for matching. Exact URL matching takes precedence over the `~/path` fallback. Local paths and `app:///` names can also match exactly. No source files, maps, or URLs are fetched from the network.
+Upload URLs are logical artifact names; they never become filesystem paths. HTTP(S) query strings/fragments are stripped for matching. Exact URL matching takes precedence over the `~/path` fallback. Local paths and `app:///` names can also match exactly. Next SDK browser names under `app:///_next/static/` also match the corresponding `~/_next/static/` alias. No source files, maps, or URLs are fetched from the network.
 
 ## Inspect mapped errors
 
@@ -140,9 +142,9 @@ No newer occurrence is substituted. If retention has deleted the triggering even
 
 ## Resource and compatibility limits
 
-The decoder supports ordinary Source Map v3 mappings, multiple sources, source roots, names, and optional embedded sources. Indexed/sectioned maps and native symbol files are rejected. It does not infer missing names, download sources, interpret runtime variables, implement source-map chaining, or provide distributed tracing. tiny-sentry still discards transactions and spans.
+The decoder supports ordinary Source Map v3 mappings, multiple sources, source roots, names, and optional embedded sources. Indexed/sectioned maps are decoded directly with bounded nested offsets; remote section URLs and native symbol files are rejected. It does not infer missing names, download sources, interpret runtime variables, implement source-map chaining, or provide distributed tracing. tiny-sentry still discards transactions and spans.
 
-Each map is limited to 500,000 segments, 250,000 generated lines, 50,000 sources, and 100,000 names. Uploads also reject maps whose accounted decoded size exceeds `SOURCEMAPS_CACHE_MB`. Each inspection maps at most the last 100 frames and attempts at most four distinct artifacts within that decoded budget. Exceeding a per-event limit produces `limit_exceeded`; exceeding the frame count sets `truncated`.
+Each map is limited to 2,000,000 segments, 250,000 generated lines, 50,000 sources, and 100,000 names. Indexed maps allow at most eight nested levels and 1,000 sections; segment/source/name/decoded-memory budgets are shared across their sections. Uploads also reject maps whose accounted decoded size exceeds `SOURCEMAPS_CACHE_MB`. Each inspection maps at most the last 100 frames and attempts at most four distinct artifacts within that decoded budget. Exceeding a per-event limit produces `limit_exceeded`; exceeding the frame count sets `truncated`.
 
 The cache budget accounts for typed mapping arrays, source/name strings, embedded source text, and estimated entry overhead. It is **not an RSS limit**. Upload buffers, JSON parsing, decompression, transient decoded maps, SQLite, and Bun add memory outside it. Parsing runs synchronously and can briefly delay other requests. Start with the defaults and reduce upload/cache limits if your service has a tight memory allowance. The earlier throughput and memory benchmarks predate source maps and do not measure this feature's overhead.
 
@@ -160,6 +162,6 @@ Schema version 4 adds the artifact table and indexes. Upgrade is automatic, incl
 
 ## Verification scope
 
-Tests build and minify real TypeScript with Bun 1.4.4, capture a generated JavaScript runtime error, upload through the network CLI, and check the original source line. Both Debug ID and release/dist/URL matching are exercised. Coverage also includes auth, project isolation, immutable identities, decompression and storage limits, concurrent upload admission, late uploads, context, unmapped segments, backups, expiry, corruption, per-event bounds, and opted-in webhook delivery.
+Tests build and minify real TypeScript with Bun 1.4.4, capture a generated JavaScript runtime error, upload through the network CLI, and check the original source line. Both Debug ID and release/dist/URL matching are exercised. The [real Next.js SDK fixture](nextjs.md#matching-and-verification) additionally checks Node 22 uploads, Turbopack indexed maps, native browser/server Debug IDs, edge release fallback, shared runtime release identity, and private cleanup without changing JS. Coverage also includes auth, project isolation, immutable identities, decompression and storage limits, concurrent upload admission, late uploads, context, unmapped segments, backups, expiry, corruption, per-event bounds, and opted-in webhook delivery.
 
 The Linux container check verifies separate map/SDK body limits and mapping after container recreation. These checks do not establish compatibility with every Vite, Next.js, webpack, browser SDK, or Sentry build-plugin version. Test your deployed build and SDK together before relying on its Debug ID reporting.

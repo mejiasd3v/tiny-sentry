@@ -1,4 +1,5 @@
 node_modules/
+test/fixtures/nextjs/.next/
 .env
 .env.*
 !.env.example

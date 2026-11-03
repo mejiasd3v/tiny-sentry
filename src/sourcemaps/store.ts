@@ -54,7 +54,7 @@ export class SourceMaps {
     if ([...query.keys()].some((key) => !["debug_id", "release", "dist", "url"].includes(key) || query.getAll(key).length !== 1)) {
       throw new HTTPException(400, { message: "Unknown or repeated source map metadata" });
     }
-    const map = parseMap(bytes);
+    const map = parseMap(bytes, this.config.cacheBytes);
     if (map.weight > this.config.cacheBytes) throw new HTTPException(413, { message: "Decoded source map exceeds SOURCEMAPS_CACHE_MB" });
     const suppliedId = query.get("debug_id");
     if (suppliedId !== null && (!debugId(suppliedId) || (map.debugId && debugId(suppliedId) !== map.debugId))) {
@@ -86,7 +86,7 @@ export class SourceMaps {
       const now = Date.now();
       if (!artifact) {
         const { count, bytes: stored } = this.usage();
-        if (count >= 1000 || stored + compressed.byteLength > this.config.maxStorageBytes) {
+        if (count >= this.config.maxArtifacts || stored + compressed.byteLength > this.config.maxStorageBytes) {
           throw new HTTPException(507, { message: "Source map storage limit reached; delete maps or raise the cap" });
         }
         artifact = { id: crypto.randomUUID(), project_id: project, debug_id: id ?? null,
@@ -96,7 +96,7 @@ export class SourceMaps {
       } else this.db.query("UPDATE sourcemaps SET uploaded_at=? WHERE id=?").run(now, artifact.id);
       if (release && url) {
         const count = this.db.query<{ count: number }, []>("SELECT COUNT(*) AS count FROM sourcemap_releases").get()!.count;
-        if (!alias && count >= 10_000) throw new HTTPException(507, { message: "Source map release alias limit reached" });
+        if (!alias && count >= this.config.maxAliases) throw new HTTPException(507, { message: "Source map release alias limit reached" });
         this.db.query(`INSERT INTO sourcemap_releases VALUES (?,?,?,?,?,?) ON CONFLICT(project_id,release,dist,url)
           DO UPDATE SET uploaded_at=excluded.uploaded_at`).run(project, release, dist, url, artifact.id, now);
       }
@@ -119,7 +119,8 @@ export class SourceMaps {
     return { sourcemaps: maps.map((map) => {
       const count = counts.get(map.id)!.count;
       return { ...map, releases: aliases.all(map.id), release_count: count, releases_truncated: count > 25 };
-    }), storage: { ...this.usage(), max_bytes: this.config.maxStorageBytes, max_maps: 1000, release_aliases: releaseAliases, max_release_aliases: 10_000 }, limit, offset };
+    }), storage: { ...this.usage(), max_bytes: this.config.maxStorageBytes, max_maps: this.config.maxArtifacts, release_aliases: releaseAliases, max_release_aliases: this.config.maxAliases },
+      limits: { max_upload_bytes: this.config.maxUploadBytes, decoded_bytes: this.config.cacheBytes, retention_days: this.config.retentionDays, indexed_maps: true }, limit, offset };
   }
 
   delete(project: string, id: string) {
@@ -211,7 +212,7 @@ export class SourceMaps {
     const row = this.db.query<{ data: Uint8Array }, [string]>("SELECT data FROM sourcemaps WHERE id=?").get(id);
     if (!row) return null;
     try {
-      const map = parseMap(gunzipSync(row.data, { maxOutputLength: this.config.maxUploadBytes }));
+      const map = parseMap(gunzipSync(row.data, { maxOutputLength: this.config.maxUploadBytes }), this.config.cacheBytes);
       this.remember(id, map);
       return map;
     } catch {
