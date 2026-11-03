@@ -8,6 +8,7 @@ export interface IntegrationRule {
   trigger: Trigger;
   projects?: string[];
   levels?: string[];
+  includeStacktrace?: boolean;
   options: Record<string, unknown>;
   // A configuration change must not send an old job to a different destination.
   revision: string;
@@ -16,6 +17,8 @@ export interface IntegrationRule {
 export interface Notification {
   kind: Trigger["type"];
   issue: Issue;
+  event_id?: string;
+  stacktrace?: string;
 }
 
 export interface DeliveryContext {

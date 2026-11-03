@@ -14,6 +14,7 @@
     "setup": "bun scripts/setup.ts",
     "test": "bun test",
     "test:container": "bun scripts/container-check.ts",
+    "check:sourcemaps:resources": "bun scripts/sourcemap-resource-check.ts",
     "benchmark": "bun scripts/benchmark.ts",
     "benchmark:load": "bun scripts/benchmark-load.ts",
     "benchmark:report": "bun scripts/benchmark-report.ts",

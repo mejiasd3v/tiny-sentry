@@ -17,6 +17,7 @@ export interface Config {
   integrations: IntegrationRule[];
   integrationsModule?: string;
   maxDeliveries: number;
+  sourceMaps?: { maxUploadBytes: number; maxStorageBytes: number; cacheBytes: number; retentionDays: number };
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
@@ -51,6 +52,9 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
   }
   const maxRequestBytes = integer("MAX_REQUEST_BYTES", 1_048_576, 10_485_760);
   const maxEventBytes = integer("MAX_EVENT_BYTES", 131_072, maxRequestBytes);
+  if (env.SOURCEMAPS_ENABLED !== undefined && !["true", "false"].includes(env.SOURCEMAPS_ENABLED)) {
+    throw new Error("SOURCEMAPS_ENABLED must be true or false");
+  }
   return {
     adminToken, projects,
     dbPath: env.DB_PATH || "./data/tiny-sentry.sqlite",
@@ -65,5 +69,11 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     integrations: parseIntegrations(env.INTEGRATIONS, projects),
     integrationsModule: env.INTEGRATIONS_MODULE || undefined,
     maxDeliveries: integer("MAX_DELIVERIES", 1000, 100_000),
+    sourceMaps: env.SOURCEMAPS_ENABLED === "true" ? {
+      maxUploadBytes: integer("SOURCEMAPS_MAX_UPLOAD_BYTES", 8 * 1024 * 1024, 32 * 1024 * 1024),
+      maxStorageBytes: integer("SOURCEMAPS_MAX_STORAGE_MB", 64, 1024) * 1024 * 1024,
+      cacheBytes: integer("SOURCEMAPS_CACHE_MB", 16, 128) * 1024 * 1024,
+      retentionDays: integer("SOURCEMAPS_RETENTION_DAYS", 30, 3650),
+    } : undefined,
   };
 }

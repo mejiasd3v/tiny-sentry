@@ -11,7 +11,7 @@ const key = "a".repeat(32);
 const admin = "b".repeat(64);
 mkdirSync(data);
 const integrations = [{ id: "smoke", type: "webhook", trigger: { type: "new_issue" }, options: { url: "http://127.0.0.1:1" } }];
-writeFileSync(envFile, `ADMIN_TOKEN=${admin}\nSENTRY_PROJECTS={"1":"${key}"}\nMAX_REQUEST_BYTES=2048\nMAX_EVENT_BYTES=1024\nINTEGRATIONS=${JSON.stringify(integrations)}\n`, { mode: 0o600 });
+writeFileSync(envFile, `ADMIN_TOKEN=${admin}\nSENTRY_PROJECTS={"1":"${key}"}\nMAX_REQUEST_BYTES=2048\nMAX_EVENT_BYTES=1024\nINTEGRATIONS=${JSON.stringify(integrations)}\nSOURCEMAPS_ENABLED=true\n`, { mode: 0o600 });
 let container: string | undefined;
 
 async function docker(...args: string[]) {
@@ -37,8 +37,14 @@ async function start() {
 
 try {
   let url = await start();
+  const headers = { Authorization: `Bearer ${admin}` };
+  const debugId = "12345678-1234-1234-1234-123456789abc";
+  const map = { version: 3, sources: ["smoke.ts"], names: [], mappings: "AAAA", debug_id: debugId, sourcesContent: ["x".repeat(3000)] };
+  const uploaded = await fetch(`${url}/api/projects/1/sourcemaps`, { method: "POST", headers, body: JSON.stringify(map) });
+  assert.equal(uploaded.status, 201, "Map uploads have a separate body limit from SDK ingestion");
   let response = await fetch(`${url}/api/1/store/?sentry_key=${key}`, {
-    method: "POST", body: JSON.stringify({ message: "Linux container smoke test" }),
+    method: "POST", body: JSON.stringify({ message: "Linux container smoke test",
+      stacktrace: { frames: [{ filename: "app.js", debug_id: debugId, lineno: 1, colno: 1 }] } }),
   });
   assert.equal(response.status, 200);
   const { id } = await response.json() as { id: string };
@@ -48,7 +54,7 @@ try {
   assert.equal(deliveries.length, 1);
   assert.equal(deliveries[0]!.kind, "new_issue");
   response = await fetch(`${url}/api/1/store/?sentry_key=${key}`, { method: "POST", body: "x".repeat(3000) });
-  assert.equal(response.status, 413, "Bun's network layer must reject oversized requests");
+  assert.equal(response.status, 413, "SDK ingestion retains its smaller request limit");
   const snapshot = await docker("stats", "--no-stream", "--format", "{{.MemUsage}}", container!);
   console.log(`Linux container memory after smoke request: ${snapshot}`);
   await docker("stop", container!);
@@ -56,12 +62,16 @@ try {
   url = await start();
   response = await fetch(`${url}/api/projects/1/events/${id}`, { headers: { Authorization: `Bearer ${admin}` } });
   assert.equal(response.status, 200);
-  const saved = await response.json() as { event: { message: string } };
+  const saved = await response.json() as { event: { message: string }; symbolication: { frames: { status: string; mapped: { filename: string } }[] } };
   assert.equal(saved.event.message, "Linux container smoke test");
+  assert.equal(saved.symbolication.frames[0]!.status, "mapped");
+  assert.equal(saved.symbolication.frames[0]!.mapped.filename, "smoke.ts", "Source maps must survive container recreation");
+  const maps = JSON.parse(await docker("exec", container!, "bun", "src/cli.ts", "sourcemaps", "list", "--project", "1")) as { sourcemaps: unknown[] };
+  assert.equal(maps.sourcemaps.length, 1);
   const restored = JSON.parse(await docker("exec", container!, "bun", "src/cli.ts", "deliveries")) as { deliveries: { id: string }[] };
   assert.equal(restored.deliveries.length, 1);
   assert.equal(restored.deliveries[0]!.id, deliveries[0]!.id, "Outbox jobs must survive container recreation");
-  console.log("PASS: container health, ingestion, request limit, graceful stop, CLI, and event/outbox persistence across recreation");
+  console.log("PASS: container health, ingestion, separate body limits, graceful stop, CLI, and event/outbox/source-map persistence across recreation");
 } finally {
   if (container) await docker("stop", container);
   rmSync(directory, { recursive: true, force: true });

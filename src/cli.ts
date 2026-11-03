@@ -15,6 +15,9 @@ const help = `tiny-sentry CLI
   bun run cli integrations
   bun run cli deliveries [--limit 25] [--offset 0]
   bun run cli retry-delivery <delivery-id>
+  bun run cli sourcemaps upload <directory> --project 1 [--release web@sha] [--dist web] [--url-prefix '~/assets/']
+  bun run cli sourcemaps list --project 1 [--limit 25] [--offset 0]
+  bun run cli sourcemaps delete <UUID> --project 1
   bun run cli backup <new-file-path>     Local database; run inside the service
 
 Set TINY_SENTRY_URL (default http://localhost:3000) and ADMIN_TOKEN.
@@ -36,6 +39,11 @@ async function main() {
     headers: { Authorization: `Bearer ${process.env.ADMIN_TOKEN}`, "Content-Type": "application/json" },
     signal: AbortSignal.timeout(15_000), redirect: "error",
   };
+  if (command === "sourcemaps") {
+    const { sourceMapsCommand } = await import("./sourcemaps/cli");
+    console.log(JSON.stringify(await sourceMapsCommand([argument, ...options].filter((value): value is string => value !== undefined), url, init), null, 2));
+    return;
+  }
   let path: string;
   switch (command) {
     case "projects": path = "/api/projects"; break;

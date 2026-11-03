@@ -77,8 +77,8 @@ async function responseJson(response: Response): Promise<unknown> {
   } finally { await reader.cancel(); }
 }
 
-function summary({ kind, issue }: Notification) {
-  return `tiny-sentry: ${kind}\n${issue.title}\nProject ${issue.project_id} · issue #${issue.id} · ${issue.level}\nOccurrences: ${issue.event_count}\nFingerprint: ${issue.fingerprint}`;
+function summary({ kind, issue, stacktrace }: Notification) {
+  return `tiny-sentry: ${kind}\n${issue.title}\nProject ${issue.project_id} · issue #${issue.id} · ${issue.level}\nOccurrences: ${issue.event_count}\nFingerprint: ${issue.fingerprint}${stacktrace ? `\n\n${stacktrace}` : ""}`.slice(0, 1900);
 }
 
 function markdown(notification: Notification) {

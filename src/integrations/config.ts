@@ -16,8 +16,9 @@ export function parseIntegrations(raw: string | undefined, projects: Record<stri
     }
     ids.add(entry.id);
     const fail = () => new Error(`Invalid configuration for integration ${entry.id}`);
-    if (Object.keys(entry).some((key) => !["id", "type", "trigger", "projects", "levels", "options"].includes(key)) ||
+    if (Object.keys(entry).some((key) => !["id", "type", "trigger", "projects", "levels", "options", "includeStacktrace"].includes(key)) ||
         typeof entry.type !== "string" || !/^[a-z][a-z0-9_-]{0,63}$/.test(entry.type) || !object(entry.options) || !object(entry.trigger)) throw fail();
+    if (entry.includeStacktrace !== undefined && typeof entry.includeStacktrace !== "boolean") throw fail();
     let trigger: Trigger;
     if (entry.trigger.type === "threshold") {
       if (Object.keys(entry.trigger).some((key) => key !== "type" && key !== "count") ||
@@ -34,7 +35,8 @@ export function parseIntegrations(raw: string | undefined, projects: Record<stri
     const selectedProjects = strings(entry.projects);
     const levels = strings(entry.levels);
     if (selectedProjects?.some((id) => !Object.hasOwn(projects, id))) throw fail();
-    const rule = { id: entry.id, type: entry.type, trigger, projects: selectedProjects, levels, options: entry.options };
+    const rule = { id: entry.id, type: entry.type, trigger, projects: selectedProjects, levels, options: entry.options,
+      ...(entry.includeStacktrace === undefined ? {} : { includeStacktrace: entry.includeStacktrace }) };
     return { ...rule, revision: createHash("sha256").update(JSON.stringify(rule)).digest("hex") };
   });
 }

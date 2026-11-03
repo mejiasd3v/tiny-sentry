@@ -24,7 +24,7 @@ export const leaseMs = 30_000;
 export class Outbox {
   constructor(private db: Database, private limit: number) {}
 
-  enqueue(rules: IntegrationRule[], issue: Issue, previous: Issue | null, now: number) {
+  enqueue(rules: IntegrationRule[], issue: Issue, previous: Issue | null, now: number, eventId: string) {
     for (const rule of rules) {
       if (rule.projects && !rule.projects.includes(issue.project_id)) continue;
       if (rule.levels && !rule.levels.includes(issue.level)) continue;
@@ -43,6 +43,7 @@ export class Outbox {
         }
       }
       const notification: Notification = { kind: trigger.type, issue };
+      if (rule.includeStacktrace) notification.event_id = eventId;
       this.db.query(`INSERT INTO integration_deliveries
         (id,integration_id,revision,issue_id,kind,payload,status,attempts,available_at,created_at,updated_at)
         VALUES (?,?,?,?,?,?,'pending',0,?,?,?)`)

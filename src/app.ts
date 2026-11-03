@@ -34,6 +34,12 @@ export function createApp(config: Config, store: Store, wakeIntegrations: () => 
   const persist = createIngestor(store, config.maxRequestBytes * 2);
   const buckets = new Map<string, { window: number; count: number }>();
   let webhooks = 0;
+  let uploadingMap = false;
+
+  function eventDetail(project: string, id: string) {
+    const saved = store.event(project, id);
+    return saved && store.sourceMaps ? { ...saved, symbolication: store.sourceMaps.symbolicate(project, saved.event) } : saved;
+  }
 
   async function notify(notices: Notice[]) {
     for (const notice of notices) {
@@ -141,8 +147,35 @@ export function createApp(config: Config, store: Store, wakeIntegrations: () => 
 
   app.get("/api/projects", (c) => c.json({ projects: Object.keys(config.projects).map((id) => ({ id })) }));
   app.get("/api/stats", (c) => c.json(store.stats()));
+  function sourceMaps(c: Context) {
+    if (!store.sourceMaps) throw new HTTPException(404, { message: "Source maps are disabled; set SOURCEMAPS_ENABLED=true" });
+    if (!Object.hasOwn(config.projects, c.req.param("project") ?? "")) throw new HTTPException(404, { message: "Project not found" });
+    return store.sourceMaps;
+  }
+  app.post("/api/projects/:project/sourcemaps", async (c) => {
+    const maps = sourceMaps(c);
+    if (uploadingMap) {
+      c.header("Retry-After", "1");
+      throw new HTTPException(429, { message: "Another source map upload is in progress" });
+    }
+    uploadingMap = true;
+    try {
+      const bytes = await readBody(c.req.raw, config.sourceMaps!.maxUploadBytes);
+      const artifact = maps.upload(c.req.param("project"), bytes, new URL(c.req.url).searchParams);
+      return c.json({ sourcemap: artifact }, 201);
+    } finally { uploadingMap = false; }
+  });
+  app.get("/api/projects/:project/sourcemaps", (c) => {
+    const maps = sourceMaps(c);
+    const { limit, offset } = pagination(c);
+    return c.json(maps.list(c.req.param("project"), limit, offset));
+  });
+  app.delete("/api/projects/:project/sourcemaps/:id", (c) => {
+    if (!sourceMaps(c).delete(c.req.param("project"), c.req.param("id"))) throw new HTTPException(404, { message: "Source map not found" });
+    return c.json({ deleted: true });
+  });
   app.get("/api/integrations", (c) => c.json({
-    integrations: config.integrations.map(({ id, type, trigger, projects, levels }) => ({ id, type, trigger, projects, levels })),
+    integrations: config.integrations.map(({ id, type, trigger, projects, levels, includeStacktrace }) => ({ id, type, trigger, projects, levels, includeStacktrace })),
     ...store.outbox.stats(),
   }));
   app.get("/api/integrations/deliveries", (c) => {
@@ -169,7 +202,7 @@ export function createApp(config: Config, store: Store, wakeIntegrations: () => 
     const issue = store.issue(issueId(c));
     if (!issue) throw new HTTPException(404, { message: "Issue not found" });
     const latest = store.events(issue.id, 1, 0)[0];
-    return c.json({ issue, latest_event: latest ? store.event(issue.project_id, latest.event_id) : null });
+    return c.json({ issue, latest_event: latest ? eventDetail(issue.project_id, latest.event_id) : null });
   });
   app.get("/api/issues/:id/events", (c) => {
     const id = issueId(c);
@@ -187,7 +220,7 @@ export function createApp(config: Config, store: Store, wakeIntegrations: () => 
     return c.json({ issue });
   });
   app.get("/api/projects/:project/events/:event", (c) => {
-    const event = store.event(c.req.param("project"), c.req.param("event").toLowerCase());
+    const event = eventDetail(c.req.param("project"), c.req.param("event").toLowerCase());
     if (!event) throw new HTTPException(404, { message: "Event not found" });
     return c.json(event);
   });

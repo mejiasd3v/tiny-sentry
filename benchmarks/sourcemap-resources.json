@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-03T15:47:22.999Z",
+  "image": "sha256:b88c1d7ad0c24a63fe02bf54297cbf80b344ecc9ac23ce9060f68bd1d162fd49",
+  "architecture": "arm64",
+  "input_bytes": 5694436,
+  "segments": 300000,
+  "frames_per_read": 100,
+  "reads": 10,
+  "peak_rss_kib": 88208,
+  "rss_kib": 84960,
+  "cgroup_peak_bytes": 128962560,
+  "cgroup_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0",
+  "limit_bytes": 134217728,
+  "result": "passed"
+}

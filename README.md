@@ -77,7 +77,7 @@ Sentry.captureException(new Error("Something broke"));
 await Sentry.flush(5000);
 ```
 
-Browser DSNs are public. Use your framework's public environment variable for the DSN; **never expose `ADMIN_TOKEN` to a browser**. With Next.js, keep the normal Sentry client/server setup and replace the DSNs in both. Release/source-map upload jobs still target Sentry's separate management APIs; disable those uploads for this service.
+Browser DSNs are public. Use your framework's public environment variable for the DSN; **never expose `ADMIN_TOKEN` to a browser**. With Next.js, keep the normal Sentry client/server setup and replace the DSNs in both. Replace Sentry source-map upload jobs with the optional [tiny-sentry uploader](docs/sourcemaps.md); Sentry's artifact upload APIs are separate and are not implemented.
 
 ### Python
 
@@ -118,7 +118,20 @@ IDs must be positive numeric strings; keys must be 16-128 URL-safe characters. G
 - Repeated event IDs are idempotent within a project while the event is retained. New IDs increment the group's lifetime count. A new event in a resolved group reopens it.
 - Simple grouping by exception type and application stack filename/function, falling back to the log message template or event title. Custom `fingerprint` arrays and `{{ default }}` are supported. Grouping is project-scoped and spans environments.
 
-This replaces **Sentry error ingestion**, not all of Sentry. Transactions, spans, replay, sessions, attachments, profiles, metrics, check-ins, feedback, and SDK logs are consumed and discarded with a successful response. Native crash reports/minidumps, source-map uploads, symbolication, Sentry's issue-management API, organizations, and Sentry CLI release commands are not implemented. Minified JavaScript stacks stay minified; native SDKs that report crashes through other endpoints are not supported. Existing events in your Sentry account are not imported.
+This replaces **Sentry error ingestion**, not all of Sentry. Transactions, spans, replay, sessions, attachments, profiles, metrics, check-ins, feedback, and SDK logs are consumed and discarded with a successful response. Optional private source maps can resolve JavaScript stacks when inspected. Native crash reports/minidumps, native symbolication, Sentry's artifact-upload and issue-management APIs, organizations, and Sentry CLI release commands are not implemented. Native SDKs that report crashes through other endpoints are not supported. Existing events in your Sentry account are not imported.
+
+## Source maps
+
+Set `SOURCEMAPS_ENABLED=true` on the server to enable private JavaScript/TypeScript source maps. Upload the exact production maps from CI before deployment, using the admin token. Run from a tiny-sentry checkout:
+
+```sh
+bun run cli sourcemaps upload ../my-app/dist --project 1 --release web@your-commit-sha --url-prefix '~/'
+bun run cli sourcemaps list --project 1
+```
+
+Set the same `release` on your application's Sentry SDK. Debug ID matching is also supported when your build and SDK report matching IDs. `show` and `event` return mapped frames separately from the unchanged original event. Maps share the existing database, volume, and backups. Limits default to 8 MiB per upload, 64 MiB compressed storage, and a 16 MiB accounted decoded cache. These are not total process memory limits.
+
+See the [source map guide](docs/sourcemaps.md) for build matching, API uploads, retention, limits, and opt-in mapped integration excerpts. Sentry CLI uploads and distributed tracing remain unsupported.
 
 ## CLI and JSON API
 
@@ -149,6 +162,9 @@ The API uses `Authorization: Bearer <ADMIN_TOKEN>`:
 | GET | `/api/integrations` | Configured integration metadata and delivery counts |
 | GET | `/api/integrations/deliveries` | Recent delivery status; supports `limit` and `offset` |
 | POST | `/api/integrations/deliveries/:id/retry` | Retry a failed delivery for an unchanged rule |
+| POST | `/api/projects/:project/sourcemaps` | Upload a private source map when enabled |
+| GET | `/api/projects/:project/sourcemaps` | Artifact metadata and global storage usage |
+| DELETE | `/api/projects/:project/sourcemaps/:id` | Delete a private source map |
 
 Page size is 1-100. `first_seen`, `last_seen`, and `received_at` are Unix milliseconds recorded by the server. The SDK's original timestamp remains in the event JSON.
 
@@ -195,13 +211,18 @@ The issue also includes fingerprint, level, and timestamps. Set `WEBHOOK_TOKEN` 
 | `INTEGRATIONS` | Unset | Optional JSON array of integration rules; [guide](docs/integrations.md) |
 | `INTEGRATIONS_MODULE` | Unset | Local TS module exporting custom provider plugins |
 | `MAX_DELIVERIES` | `1000` | Cap for queued deliveries plus recent terminal history |
+| `SOURCEMAPS_ENABLED` | `false` | Optional private uploads and on-demand JavaScript stack mapping |
+| `SOURCEMAPS_MAX_UPLOAD_BYTES` | `8388608` | Compressed and decompressed map upload limits |
+| `SOURCEMAPS_MAX_STORAGE_MB` | `64` | Compressed artifact storage cap in MiB, also sharing `MAX_DB_MB` |
+| `SOURCEMAPS_CACHE_MB` | `16` | Accounted decoded cache and per-event map budget in MiB |
+| `SOURCEMAPS_RETENTION_DAYS` | `30` | Expire maps since their last successful upload |
 | `TINY_SENTRY_URL` | `http://localhost:3000` | CLI target; not used by the server |
 
 Retention runs at startup, hourly, and after ingestion. The oldest events are removed first; groups disappear when no retained events remain. Counts on an existing group include pruned occurrences. Deleted SQLite pages are reused; the database file does not automatically shrink. The page cap excludes WAL/SHM files and backups, so leave volume headroom. A full database returns HTTP 507 rather than acknowledging an unsaved error. The database must fit the configured cap at startup.
 
 Concurrent ingestion requests can share a SQLite commit, with up to 32 requests and a waiting payload budget of twice `MAX_REQUEST_BYTES`. An individual request larger than that budget flushes immediately. Batching uses the next event-loop turn with no fixed timer delay. Responses wait for the commit; if it fails, every request sharing that commit fails and can be retried. Retention and deduplication still run in request order inside the transaction. SQLite uses WAL with `synchronous=NORMAL`, which does not guarantee survival of host power loss.
 
-Startup automatically upgrades existing databases to schema version 3, including transactional retention counters, cleanup triggers, and integration delivery tables. Older tiny-sentry versions refuse to open this schema. Keep a pre-upgrade backup if you need to roll back to an older image.
+Startup automatically upgrades existing databases to schema version 4, including transactional retention counters, cleanup triggers, integration delivery tables, and private source map storage. Older tiny-sentry versions refuse to open this schema. Keep a pre-upgrade backup if you need to roll back to an older image.
 
 Limits protect small deployments; they do not provide abuse protection for a publicly known DSN. Requests with bad keys to a known project count against its rate limit. Sentry-compatible `429` responses include retry headers. Use edge access controls if you need stronger abuse protection. Management tokens have access to every project on this instance; there are no user accounts or per-project admin permissions.
 
@@ -225,6 +246,6 @@ docker build -t tiny-sentry:verify .
 bun run test:container
 ```
 
-Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, consistent backups, and integration triggers, delivery, and recovery. See the [integration verification scope](docs/integrations.md#verification-scope) for the limits of provider tests. The container check verifies Linux startup, network body limits, graceful stop, and persistence across container recreation. CI runs both. The real-SDK smoke checks described above used temporary installations outside this repository; Sentry SDKs are not service dependencies.
+Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, consistent backups, integration triggers and recovery, and mapping real bundled errors through CLI uploads. See the [integration verification scope](docs/integrations.md#verification-scope) and [source map verification scope](docs/sourcemaps.md#verification-scope) for compatibility limits. The container check verifies Linux startup, separate SDK/map body limits, graceful stop, and event/outbox/map persistence across container recreation. CI runs both. The real-SDK smoke checks described above used temporary installations outside this repository; Sentry SDKs are not service dependencies.
 
 MIT licensed. This project is independent of Sentry and is not affiliated with or endorsed by Sentry.

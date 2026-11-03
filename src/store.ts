@@ -4,6 +4,7 @@ import { dirname } from "node:path";
 import type { Config } from "./config";
 import type { PreparedEvent } from "./event";
 import { Outbox } from "./integrations/outbox";
+import { SourceMaps } from "./sourcemaps/store";
 
 export interface Issue {
   id: number;
@@ -23,13 +24,14 @@ export interface Ingestion { project: string; events: PreparedEvent[]; receivedA
 export class Store {
   private db: Database;
   readonly outbox: Outbox;
+  readonly sourceMaps?: SourceMaps;
 
   constructor(private config: Config) {
     if (config.dbPath !== ":memory:") mkdirSync(dirname(config.dbPath), { recursive: true });
     this.db = new Database(config.dbPath, { create: true, strict: true });
     try {
       const version = this.db.query<{ user_version: number }, []>("PRAGMA user_version").get()!.user_version;
-      if (version > 3) throw new Error("Database schema is newer than this tiny-sentry version");
+      if (version > 4) throw new Error("Database schema is newer than this tiny-sentry version");
       this.db.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;");
       const pageSize = this.db.query<{ page_size: number }, []>("PRAGMA page_size").get()!.page_size;
       const maxPages = Math.floor(config.maxDbMb * 1024 * 1024 / pageSize);
@@ -91,9 +93,34 @@ export class Store {
         CREATE INDEX IF NOT EXISTS deliveries_due ON integration_deliveries(status,available_at);
         CREATE TABLE IF NOT EXISTS integration_state (id INTEGER PRIMARY KEY CHECK (id=1), dropped INTEGER NOT NULL);
         INSERT OR IGNORE INTO integration_state VALUES (1,0);
-        PRAGMA user_version=3;
+        CREATE TABLE IF NOT EXISTS sourcemaps (
+          id TEXT PRIMARY KEY,
+          project_id TEXT NOT NULL,
+          debug_id TEXT,
+          sha256 TEXT NOT NULL,
+          raw_bytes INTEGER NOT NULL,
+          stored_bytes INTEGER NOT NULL,
+          uploaded_at INTEGER NOT NULL,
+          data BLOB NOT NULL
+        );
+        CREATE UNIQUE INDEX IF NOT EXISTS sourcemaps_debug ON sourcemaps(project_id,debug_id) WHERE debug_id IS NOT NULL;
+        CREATE INDEX IF NOT EXISTS sourcemaps_content ON sourcemaps(project_id,sha256);
+        CREATE INDEX IF NOT EXISTS sourcemaps_age ON sourcemaps(uploaded_at);
+        CREATE TABLE IF NOT EXISTS sourcemap_releases (
+          project_id TEXT NOT NULL,
+          release TEXT NOT NULL,
+          dist TEXT NOT NULL,
+          url TEXT NOT NULL,
+          artifact_id TEXT NOT NULL REFERENCES sourcemaps(id) ON DELETE CASCADE,
+          uploaded_at INTEGER NOT NULL,
+          PRIMARY KEY(project_id,release,dist,url)
+        );
+        CREATE INDEX IF NOT EXISTS sourcemap_releases_artifact ON sourcemap_releases(artifact_id);
+        CREATE INDEX IF NOT EXISTS sourcemap_releases_age ON sourcemap_releases(uploaded_at);
+        PRAGMA user_version=4;
       `)).immediate();
       this.outbox = new Outbox(this.db, config.maxDeliveries);
+      if (config.sourceMaps) this.sourceMaps = new SourceMaps(this.db, config.sourceMaps);
     } catch (error) {
       this.db.close();
       throw error;
@@ -118,7 +145,7 @@ export class Store {
         RETURNING *
       `).get(project, event.fingerprint, event.title, event.level, now, now)!;
       this.db.query("INSERT INTO events VALUES (?,?,?,?,?,?,?)").run(project, event.id, issue.id, now, event.environment, event.release, event.payload);
-      if (this.config.integrations.length) this.outbox.enqueue(this.config.integrations, issue, previous, now);
+      if (this.config.integrations.length) this.outbox.enqueue(this.config.integrations, issue, previous, now, event.id);
       if (!previous || previous.status === "resolved") {
         notices.set(issue.id, { kind: previous ? "regression" : "new_issue", issue });
       } else if (notices.has(issue.id)) {
@@ -137,6 +164,7 @@ export class Store {
 
   prune(now = Date.now()) {
     this.db.transaction(() => this.pruneEvents(now)).immediate();
+    this.sourceMaps?.prune(now);
   }
 
   private pruneEvents(now: number) {

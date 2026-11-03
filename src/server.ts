@@ -2,17 +2,18 @@ import { createApp } from "./app";
 import { loadConfig } from "./config";
 import { Store } from "./store";
 import { createDispatcher, loadDeliveries } from "./integrations/runtime";
+import { enrichNotification } from "./integrations/enrich";
 
 const config = loadConfig();
 const deliveries = await loadDeliveries(config);
 const store = new Store(config);
 store.prune();
 store.outbox.reconcile(config.integrations);
-const dispatcher = config.integrations.length ? createDispatcher(store.outbox, deliveries) : undefined;
+const dispatcher = config.integrations.length ? createDispatcher(store.outbox, deliveries, (notification) => enrichNotification(store, notification)) : undefined;
 const app = createApp(config, store, dispatcher?.wake);
 const server = Bun.serve({
   port: config.port, hostname: "0.0.0.0", fetch: app.fetch,
-  maxRequestBodySize: config.maxRequestBytes,
+  maxRequestBodySize: Math.max(config.maxRequestBytes, config.sourceMaps?.maxUploadBytes ?? 0),
   idleTimeout: 15,
 });
 dispatcher?.wake();

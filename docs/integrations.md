@@ -35,6 +35,8 @@ Also set `GITHUB_ISSUES_TOKEN` and `DISCORD_WEBHOOK_URL`. The server validates r
 
 Each rule has a unique `id` (1–64 letters, digits, `_` or `-`), one provider `type`, one `trigger`, and provider `options`. `projects` and `levels` are optional nonempty arrays. Omitting either matches all projects or all levels. Project IDs must exist in `SENTRY_PROJECTS`; levels match the SDK's level strings exactly. Up to 32 rules are supported.
 
+Optional `includeStacktrace: true` adds a mapped exception stack excerpt when [private source maps](sourcemaps.md#integration-excerpts) are enabled and available. It is off by default. Excerpts contain filenames, function names, and positions, with no source snippets. The worker uses the triggering event, never a newer occurrence; if that event has expired, it sends the normal summary.
+
 Use separate IDs to configure several triggers or destinations, even for the same provider. Remove a rule to disable it; use `[]` or unset `INTEGRATIONS` to disable all integrations. No provider credentials go in a client DSN.
 
 ## Triggers
@@ -53,7 +55,7 @@ Existing retention semantics apply: counts include pruned occurrences while the 
 
 ## Providers
 
-Examples below are the `options` object of a rule. Every provider receives only an issue summary: trigger kind, issue/project IDs, title, fingerprint, level, status, timestamps, and occurrence count. Raw events, stack traces, request data, public keys, and admin tokens are not included. Titles can still contain sensitive application strings; apply SDK `beforeSend` redaction as needed.
+Examples below are the `options` object of a rule. By default, every provider receives only an issue summary: trigger kind, issue/project IDs, title, fingerprint, level, status, timestamps, and occurrence count. Opted-in rules can also send the mapped stack excerpt described above; webhooks and custom plugins receive optional `event_id` and `stacktrace` fields. Raw events, source snippets, request data, public keys, and admin tokens are not included. Titles and opted-in names/paths can still contain sensitive application strings; apply SDK `beforeSend` redaction as needed.
 
 ### GitHub
 

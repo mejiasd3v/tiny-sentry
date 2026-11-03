@@ -37,7 +37,7 @@ export async function loadDeliveries(config: Config, env: Record<string, string 
 }
 
 /** One bounded request at a time, no idle polling, no extra process. */
-export function createDispatcher(outbox: Outbox, deliveries: Map<string, Delivery>) {
+export function createDispatcher(outbox: Outbox, deliveries: Map<string, Delivery>, enrich: (notification: Notification) => Notification = (notification) => notification) {
   let running: Promise<void> | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let controller: AbortController | undefined;
@@ -57,7 +57,7 @@ export function createDispatcher(outbox: Outbox, deliveries: Map<string, Deliver
       const onAbort = () => aborted.reject(new DeliveryError(true));
       signal.addEventListener("abort", onAbort, { once: true });
       try {
-        const notification = JSON.parse(job.payload) as Notification;
+        const notification = enrich(JSON.parse(job.payload) as Notification);
         await Promise.race([
           delivery.send(notification, { signal, idempotencyKey: job.id }),
           aborted.promise,
