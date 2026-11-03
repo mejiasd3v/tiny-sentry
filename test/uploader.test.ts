@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test";
-import { cp, mkdtemp, readFile, rm, writeFile, mkdir } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile, mkdir, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createApp } from "../src/app";
@@ -30,8 +30,8 @@ async function output() {
   return { dist, browser, copy };
 }
 
-async function cli(dist: string, url: string, args: string[] = [], extra: Record<string, string> = {}) {
-  const child = Bun.spawn([process.env.NODE_BINARY || "node", resolve("tools/upload-sourcemaps.mjs"), "next", dist,
+async function cli(dist: string, url: string, args: string[] = [], extra: Record<string, string> = {}, entry = resolve("tools/upload-sourcemaps.mjs")) {
+  const child = Bun.spawn([process.env.NODE_BINARY || "node", entry, "next", dist,
     "--project", "1", "--release", "web@immutable", ...args], {
     env: { PATH: process.env.PATH, TINY_SENTRY_URL: url, TINY_SENTRY_ADMIN_TOKEN: admin, ...extra }, stdout: "pipe", stderr: "pipe",
   });
@@ -123,5 +123,23 @@ test("shared Turbopack maps upload every generated filename alias without duplic
     expect(inventory.storage.count).toBe(3);
     expect(inventory.sourcemaps.find((map) => map.releases.length === 2)?.releases.map((alias) => alias.url).sort())
       .toEqual(["~/_next/static/chunks/vendor-copy.js", "~/_next/static/chunks/vendor.js"]);
+  } finally { await server.stop(true); store.close(); }
+});
+
+test("a symlinked Node entry emits a receipt and actually uploads and cleans public maps", async () => {
+  const f = await output();
+  const entry = resolve(f.dist, "..", "upload-sourcemaps.mjs");
+  await symlink(resolve("tools/upload-sourcemaps.mjs"), entry);
+  const config = loadConfig({ ADMIN_TOKEN: admin, SENTRY_PROJECTS: JSON.stringify({ "1": key }), DB_PATH: ":memory:", SOURCEMAPS_ENABLED: "true" });
+  const store = new Store(config), app = createApp(config, store);
+  const server = Bun.serve({ port: 0, fetch: app.fetch });
+  try {
+    const result = await cli(f.dist, `http://127.0.0.1:${server.port}`, ["--delete-public-maps"], {}, entry);
+    expect(result.err).toBe(""); expect(result.exit).toBe(0);
+    expect(result.out).not.toBe("");
+    expect(JSON.parse(result.out)).toMatchObject({ uploaded: 2, public_maps_deleted: 6, blocked: false });
+    expect(store.sourceMaps!.list("1", 100, 0).storage.count).toBe(2);
+    expect(await Bun.file(join(f.browser, "hashed-map.js.map")).exists()).toBe(false);
+    expect(await Bun.file(join(f.copy, "chunks", "hashed-map.js.map")).exists()).toBe(false);
   } finally { await server.stop(true); store.close(); }
 });

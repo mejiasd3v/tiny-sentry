@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { realpathSync } from "node:fs";
 import { lstat, readdir, readFile, unlink } from "node:fs/promises";
 import { basename, join, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -275,7 +276,7 @@ export async function runUploader(args: string[], env: Record<string, string | u
   return { ...report, uploaded, artifacts, public_maps_deleted: flags.has("--delete-public-maps") ? publicMaps.size : 0 };
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   runUploader(process.argv.slice(2)).then((result) => {
     console.log(JSON.stringify(result, null, 2));
     if (object(result) && result.blocked) process.exitCode = 2;
