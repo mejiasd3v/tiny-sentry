@@ -4,6 +4,10 @@ Headless error tracking for personal projects. Keep your Sentry SDK, change its 
 
 **Bun + TypeScript + Hono + SQLite.** Hono is the only runtime dependency. No dashboard, Postgres, Redis, queue, or separate worker. Inspect errors with the CLI or JSON API.
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/github)
+
+The button opens Railway's GitHub deploy flow. Select `mejiasd3v/tiny-sentry`, then [add credentials and a persistent volume](#deploy-on-railway). It does not provision a preconfigured template.
+
 ## Start locally
 
 Requires [Bun](https://bun.sh) 1.4.2 or newer.
@@ -45,7 +49,7 @@ Start with the defaults: 14-day retention, 10,000 events across all projects, a 
 
 Railway's **Serverless** setting can let an idle service sleep. This service has no periodic outbound polling. Waking adds latency and can exceed a short SDK flush deadline, especially when reporting from a short-lived process. Keep it always on if delivery matters more than the idle savings. Persistent data stays on the volume through sleep.
 
-In one local Linux container smoke test, Docker reported about 14 MiB of memory after ingestion. This is a startup measurement, not a benchmark under load or a Railway memory forecast.
+Local Linux ARM64 runs measured about **43 MiB of process RSS at idle** and a **75 MiB high-water mark under load**, inside a 128 MiB container limit. See the [memory analysis and scoped Sentry benchmark](benchmarks/README.md) for workloads, raw results, cost interpretation, and limitations.
 
 Railway bills actual resources and volume usage, subject to your plan and included credits. See [current Railway pricing](https://docs.railway.com/pricing/plans); a small service does not guarantee a free account or a fixed monthly bill. Set a Railway usage limit. Check the service's measured memory and CPU before changing limits.
 

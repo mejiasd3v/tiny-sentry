@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="310" viewBox="0 0 760 310" role="img" aria-labelledby="title desc">
+<title id="title">Local working-set comparison for error ingestion</title>
+<desc id="desc">Pre-batch Docker working-set snapshots, median across three batches: tiny-sentry 27.50 MiB, Sentry errors-only 4637.53 MiB. Different resource allocations and product capabilities.</desc>
+<rect width="760" height="310" rx="12" fill="#0f172a"/><g font-family="system-ui, sans-serif">
+<text x="18" y="35" fill="#f8fafc" font-size="22" font-weight="600">Error ingestion: local memory observations</text>
+<text x="18" y="62" fill="#94a3b8" font-size="13">Pre-batch working set · median across 3 batches · linear scale from 0 to 5120 MiB</text>
+<text x="18" y="119" fill="#e2e8f0" font-size="14">tiny-sentry (1 service)</text>
+<rect x="255" y="97" width="2.06787109375" height="32" rx="2" fill="#38bdf8"/>
+<text x="265.06787109375" y="119" fill="#f8fafc" font-size="14">27.5 MiB</text>
+<text x="18" y="184" fill="#e2e8f0" font-size="14">Sentry errors-only (28 services)</text>
+<rect x="255" y="162" width="348.72044473266595" height="32" rx="2" fill="#a78bfa"/>
+<text x="611.720444732666" y="184" fill="#f8fafc" font-size="14">4637.5 MiB</text>
+<text x="18" y="234" fill="#94a3b8" font-size="12">tiny-sentry: 1 CPU / 128 MiB cap. Sentry: unrestricted within the shared 12-CPU / ~8 GB Docker VM.</text>
+<text x="18" y="258" fill="#94a3b8" font-size="12">Snapshots are not load peaks. Both use warmed projects. Local ARM64 results, not Railway metrics.</text>
+<text x="18" y="282" fill="#94a3b8" font-size="12">Sentry provides more features in this mode. This is not a feature-equivalent capacity comparison.</text>
+</g></svg>

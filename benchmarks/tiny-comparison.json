@@ -1,0 +1,313 @@
+{
+  "label": "tiny-sentry 0.1.0",
+  "recordedAt": "2026-11-03T14:38:45.047Z",
+  "memoryMethod": "Docker working-set snapshots before load, after all HTTP acknowledgements, and after the event verification scan. These are not load peaks.",
+  "observations": [
+    {
+      "repeat": 1,
+      "before": {
+        "recordedAt": "2026-11-03T14:38:20.820Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.48%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "21.18%",
+            "MemUsage": "27.11MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "5.76MB / 5.36MB",
+            "PIDs": "7"
+          }
+        ]
+      },
+      "result": {
+        "run": "fd84a4d5-0b4a-4108-94aa-90997e2d26df",
+        "startedAt": "2026-11-03T14:38:20.821Z",
+        "acknowledgedAt": "2026-11-03T14:38:21.475Z",
+        "workload": {
+          "name": "burst",
+          "count": 2000,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.6538884170000001,
+        "status": {
+          "200": 2000
+        },
+        "accepted": 2000,
+        "acceptedPerSecond": 3058.625826675256,
+        "httpLatencyMs": {
+          "p50": 1.8150419999999485,
+          "p95": 7.316332999999986,
+          "p99": 10.58945800000015
+        },
+        "verified": 2000,
+        "missing": 0,
+        "verificationSeconds": 0.126841625,
+        "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency."
+      },
+      "afterAcknowledgement": {
+        "recordedAt": "2026-11-03T14:38:22.834Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.58%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "21.39%",
+            "MemUsage": "27.38MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "10.7MB / 6.11MB",
+            "PIDs": "7"
+          }
+        ]
+      },
+      "afterVerification": {
+        "recordedAt": "2026-11-03T14:38:24.857Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.32%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "22.15%",
+            "MemUsage": "28.35MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "11.5MB / 10.7MB",
+            "PIDs": "7"
+          }
+        ]
+      }
+    },
+    {
+      "repeat": 2,
+      "before": {
+        "recordedAt": "2026-11-03T14:38:30.921Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.25%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "21.49%",
+            "MemUsage": "27.5MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "11.5MB / 10.7MB",
+            "PIDs": "6"
+          }
+        ]
+      },
+      "result": {
+        "run": "ae2f9b94-bd4c-4d8e-b1e3-2041753b97c8",
+        "startedAt": "2026-11-03T14:38:30.921Z",
+        "acknowledgedAt": "2026-11-03T14:38:31.619Z",
+        "workload": {
+          "name": "burst",
+          "count": 2000,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.6977006669999991,
+        "status": {
+          "200": 2000
+        },
+        "accepted": 2000,
+        "acceptedPerSecond": 2866.5588189841915,
+        "httpLatencyMs": {
+          "p50": 1.903334000000541,
+          "p95": 7.830541999999696,
+          "p99": 10.914667000000918
+        },
+        "verified": 2000,
+        "missing": 0,
+        "verificationSeconds": 0.12580075000000032,
+        "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency."
+      },
+      "afterAcknowledgement": {
+        "recordedAt": "2026-11-03T14:38:32.924Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.45%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "22.83%",
+            "MemUsage": "29.22MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "16.6MB / 11.5MB",
+            "PIDs": "6"
+          }
+        ]
+      },
+      "afterVerification": {
+        "recordedAt": "2026-11-03T14:38:34.947Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.18%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "23.19%",
+            "MemUsage": "29.69MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "17.4MB / 16.1MB",
+            "PIDs": "6"
+          }
+        ]
+      }
+    },
+    {
+      "repeat": 3,
+      "before": {
+        "recordedAt": "2026-11-03T14:38:41.026Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.09%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "23.09%",
+            "MemUsage": "29.56MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "17.4MB / 16.1MB",
+            "PIDs": "6"
+          }
+        ]
+      },
+      "result": {
+        "run": "e90699ed-501d-41c2-8726-5ffa5a9ea3df",
+        "startedAt": "2026-11-03T14:38:41.026Z",
+        "acknowledgedAt": "2026-11-03T14:38:41.757Z",
+        "workload": {
+          "name": "burst",
+          "count": 2000,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.7306554590000014,
+        "status": {
+          "200": 2000
+        },
+        "accepted": 2000,
+        "acceptedPerSecond": 2737.268264220272,
+        "httpLatencyMs": {
+          "p50": 1.8968330000025162,
+          "p95": 8.337791999998444,
+          "p99": 15.209624999999505
+        },
+        "verified": 2000,
+        "missing": 0,
+        "verificationSeconds": 0.10357087500000126,
+        "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency."
+      },
+      "afterAcknowledgement": {
+        "recordedAt": "2026-11-03T14:38:43.030Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.11%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "25.28%",
+            "MemUsage": "32.36MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "22.5MB / 16.8MB",
+            "PIDs": "6"
+          }
+        ]
+      },
+      "afterVerification": {
+        "recordedAt": "2026-11-03T14:38:45.047Z",
+        "health": [
+          {
+            "container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "running": true,
+            "oomKilled": false,
+            "exitCode": 0
+          }
+        ],
+        "containers": [
+          {
+            "BlockIO": "72.7MB / 0B",
+            "CPUPerc": "0.14%",
+            "Container": "5b72ef929539048dbcdf7a4d864457c90002522a58a42f40523e942714470bc6",
+            "ID": "5b72ef929539",
+            "MemPerc": "25.86%",
+            "MemUsage": "33.1MiB / 128MiB",
+            "Name": "brave_blackburn",
+            "NetIO": "23.3MB / 21.4MB",
+            "PIDs": "6"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "recordedAt": "2026-11-03T14:31:46Z",
+  "release": "26.10.1",
+  "sourceCommit": "192a826421decd7f8ce6673bb9a299737d0d6916",
+  "profile": "errors-only",
+  "retentionDays": 14,
+  "hostCpu": "Apple M2 Max",
+  "dockerArch": "aarch64",
+  "dockerLogicalCpus": 12,
+  "dockerMemoryBytes": 8392343552,
+  "serviceCpuLimits": "No individual CPU/memory limits; shared 12-CPU, 8,392,343,552-byte Docker VM",
+  "configurationChanges": [
+    "COMPOSE_PROFILES=errors-only",
+    "SENTRY_EVENT_RETENTION_DAYS=14",
+    "SENTRY_BIND=127.0.0.1:19000",
+    "Isolated Compose project name",
+    "Explicit unused 10.222.250.0/24 subnet because default Docker pools were exhausted"
+  ],
+  "services": [
+    {
+      "Service": "attachments-consumer",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "clickhouse",
+      "Image": "clickhouse-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "events-consumer",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "kafka",
+      "Image": "confluentinc/cp-kafka:7.6.14",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "memcached",
+      "Image": "memcached:1.6.45-alpine",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "nginx",
+      "Image": "nginx:1.31.8-alpine",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "pgbouncer",
+      "Image": "edoburu/pgbouncer:v1.26.1-p0",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "post-process-forwarder-errors",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "postgres",
+      "Image": "postgres:18.6-trixie",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "redis",
+      "Image": "valkey/valkey:8.1.11-alpine",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "relay",
+      "Image": "ghcr.io/getsentry/relay:26.10.1",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "seaweedfs",
+      "Image": "chrislusf/seaweedfs:4.51_large_disk@sha256:f44a1d38dd2da974a16ccb26f9f9447152fd1c101ca03032e88819c6318d7bf6",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "sentry-cleanup",
+      "Image": "sentry-cleanup-self-hosted-local",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "smtp",
+      "Image": "registry.gitlab.com/egos-tech/smtp",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "snuba-api",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-errors-consumer",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-group-attributes-consumer",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-outcomes-billing-consumer",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-outcomes-consumer",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-replacer",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-subscription-consumer-eap-items",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-subscription-consumer-events",
+      "Image": "ghcr.io/getsentry/snuba:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "symbolicator",
+      "Image": "ghcr.io/getsentry/symbolicator:26.10.1",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "symbolicator-cleanup",
+      "Image": "ghcr.io/getsentry/symbolicator:26.10.1",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskbroker",
+      "Image": "ghcr.io/getsentry/taskbroker:26.10.1",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskscheduler",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskworker",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "web",
+      "Image": "sentry-self-hosted-local",
+      "State": "running",
+      "Health": "healthy"
+    }
+  ],
+  "notes": [
+    "Local Docker ARM64 comparison, not a Railway deployment.",
+    "No Sentry installation resource numbers are used as measured memory.",
+    "Three sequential batches in one fresh project, with separate fingerprint namespaces; no state reset between batches.",
+    "Two unrelated containers (Redis and TimescaleDB) stayed running but received no benchmark traffic and are excluded from stack memory.",
+    "A pre-measurement ingestion/verification run was interrupted after a stopped symbolicator container was detected. It is excluded from these results.",
+    "Symbolicator was restarted and healthy before the measured runs. The warm-up events remained in the project."
+  ],
+  "finalServices": [
+    {
+      "Service": "attachments-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "clickhouse",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "events-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "kafka",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "memcached",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "nginx",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "pgbouncer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "post-process-forwarder-errors",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "postgres",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "redis",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "relay",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "seaweedfs",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "sentry-cleanup",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "smtp",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "snuba-api",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-errors-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-group-attributes-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-outcomes-billing-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-outcomes-consumer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-replacer",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-subscription-consumer-eap-items",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "snuba-subscription-consumer-events",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "symbolicator",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "symbolicator-cleanup",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskbroker",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskscheduler",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "taskworker",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "web",
+      "State": "running",
+      "Health": "healthy"
+    }
+  ]
+}

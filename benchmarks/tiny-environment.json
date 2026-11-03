@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "ee0841f966bad6f3cad4704de1e4efceda69cfec",
+  "image": "sha256:0fb2cf69f9f2818054579de4d224cd8d3af1351fd8d981619e3129b12e70ca6c",
+  "cpus": 1,
+  "memoryBytes": 134217728,
+  "swap": false,
+  "rateLimitPerMinute": 1000000,
+  "retentionDays": 14,
+  "maxEvents": 10000,
+  "maxDbMiB": 256,
+  "warmupEvents": 2000,
+  "notes": [
+    "One fresh container/database for warm-up and three measured batches. Database is not reset between batches.",
+    "Sentry stack was stopped before starting this container.",
+    "Two unrelated idle Redis/TimescaleDB containers stayed running but are excluded from memory snapshots."
+  ]
+}

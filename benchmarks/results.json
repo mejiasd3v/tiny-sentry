@@ -1,0 +1,3530 @@
+{
+  "environment": {
+    "recordedAt": "2026-11-03T14:38:54.922Z",
+    "sourceCommit": "ee0841f966bad6f3cad4704de1e4efceda69cfec\n",
+    "image": {
+      "id": "sha256:0fb2cf69f9f2818054579de4d224cd8d3af1351fd8d981619e3129b12e70ca6c",
+      "arch": "arm64",
+      "sizeBytes": 134637314
+    },
+    "docker": {
+      "version": "29.8.2",
+      "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+      "os": "OrbStack",
+      "arch": "aarch64",
+      "cpus": 12,
+      "memoryBytes": 8392343552
+    },
+    "host": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "cpu": "Apple M2 Max",
+      "logicalCpus": 12,
+      "memoryBytes": 34359738368,
+      "bun": "1.4.2"
+    },
+    "limits": {
+      "cpus": 1,
+      "memoryBytes": 134217728,
+      "swap": false,
+      "maxEvents": 10000,
+      "maxDbMiB": 256,
+      "rateLimitPerMinute": 1000000
+    },
+    "repetitions": 3
+  },
+  "runs": [
+    {
+      "repeat": 1,
+      "idle": {
+        "rssBytes": 45846528,
+        "rssHighWaterBytes": 48193536,
+        "residentBreakdownBytes": {
+          "Rss": 45846528,
+          "Pss": 45600768,
+          "Pss_Dirty": 9965568,
+          "Pss_Anon": 9932800,
+          "Pss_File": 35667968,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 483328,
+          "Shared_Dirty": 0,
+          "Private_Clean": 35397632,
+          "Private_Dirty": 9965568,
+          "Referenced": 45846528,
+          "Anonymous": 9932800,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 0,
+        "issues": 0,
+        "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n    57712 /data/tiny-sentry.sqlite-wal\n    94576 total"
+      },
+      "stages": [
+        {
+          "run": "47291e1f-95b1-4d69-a355-f73f8c328bab",
+          "startedAt": "2026-11-03T14:39:05.490Z",
+          "acknowledgedAt": "2026-11-03T14:39:34.996Z",
+          "workload": {
+            "name": "personal",
+            "count": 60,
+            "concurrency": 1,
+            "eventBytes": 2048,
+            "groups": 10,
+            "perSecond": 2
+          },
+          "seconds": 29.505849666000003,
+          "status": {
+            "200": 60
+          },
+          "accepted": 60,
+          "acceptedPerSecond": 2.03349507569473,
+          "httpLatencyMs": {
+            "p50": 3.535374999999476,
+            "p95": 6.555999999996857,
+            "p99": 8.893291000000318
+          },
+          "snapshot": {
+            "rssBytes": 53035008,
+            "rssHighWaterBytes": 53297152,
+            "residentBreakdownBytes": {
+              "Rss": 53035008,
+              "Pss": 52760576,
+              "Pss_Dirty": 14258176,
+              "Pss_Anon": 14237696,
+              "Pss_File": 38522880,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 540672,
+              "Shared_Dirty": 0,
+              "Private_Clean": 38236160,
+              "Private_Dirty": 14258176,
+              "Referenced": 52961280,
+              "Anonymous": 14237696,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 60,
+            "issues": 10,
+            "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  2319592 /data/tiny-sentry.sqlite-wal\n  2356456 total"
+          }
+        },
+        {
+          "run": "8b02aaac-fd99-4ace-9acf-b5b11c1a3f4b",
+          "startedAt": "2026-11-03T14:39:35.173Z",
+          "acknowledgedAt": "2026-11-03T14:39:35.902Z",
+          "workload": {
+            "name": "burst",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.7284776670000065,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2745.451357810784,
+          "httpLatencyMs": {
+            "p50": 2.08879199999501,
+            "p95": 7.894000000000233,
+            "p99": 12.897958000001381
+          },
+          "snapshot": {
+            "rssBytes": 63717376,
+            "rssHighWaterBytes": 66338816,
+            "residentBreakdownBytes": {
+              "Rss": 63717376,
+              "Pss": 63471616,
+              "Pss_Dirty": 22986752,
+              "Pss_Anon": 22953984,
+              "Pss_File": 40517632,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40247296,
+              "Private_Dirty": 22986752,
+              "Referenced": 63700992,
+              "Anonymous": 22953984,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 2060,
+            "issues": 20,
+            "files": "8437760 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4161232 /data/tiny-sentry.sqlite-wal\n 12631760 total"
+          }
+        },
+        {
+          "run": "934e7925-e8ae-4f63-a1f3-9e6da1414168",
+          "startedAt": "2026-11-03T14:39:36.038Z",
+          "acknowledgedAt": "2026-11-03T14:39:36.467Z",
+          "workload": {
+            "name": "many-issues",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 1000
+          },
+          "seconds": 0.428796583000003,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 2332.1081362255,
+          "httpLatencyMs": {
+            "p50": 2.655917000003683,
+            "p95": 8.483124999998836,
+            "p99": 11.30120899999747
+          },
+          "snapshot": {
+            "rssBytes": 64659456,
+            "rssHighWaterBytes": 66338816,
+            "residentBreakdownBytes": {
+              "Rss": 64659456,
+              "Pss": 64413696,
+              "Pss_Dirty": 23928832,
+              "Pss_Anon": 23896064,
+              "Pss_File": 40517632,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40247296,
+              "Private_Dirty": 23928832,
+              "Referenced": 64647168,
+              "Anonymous": 23896064,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 3060,
+            "issues": 1020,
+            "files": "12865536 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4169472 /data/tiny-sentry.sqlite-wal\n 17067776 total"
+          }
+        },
+        {
+          "run": "d5de762a-54d1-47b2-93cd-4152446b559b",
+          "startedAt": "2026-11-03T14:39:36.616Z",
+          "acknowledgedAt": "2026-11-03T14:39:37.543Z",
+          "workload": {
+            "name": "large-events",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 65536,
+            "groups": 10
+          },
+          "seconds": 0.9271083340000041,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 1078.6225981655296,
+          "httpLatencyMs": {
+            "p50": 4.655250000003434,
+            "p95": 18.510500000003958,
+            "p99": 21.424916000003577
+          },
+          "snapshot": {
+            "rssBytes": 67723264,
+            "rssHighWaterBytes": 78356480,
+            "residentBreakdownBytes": {
+              "Rss": 67723264,
+              "Pss": 67477504,
+              "Pss_Dirty": 26927104,
+              "Pss_Anon": 26894336,
+              "Pss_File": 40583168,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40312832,
+              "Private_Dirty": 26927104,
+              "Referenced": 67710976,
+              "Anonymous": 26894336,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 4060,
+            "issues": 1030,
+            "files": "79171584 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n 83419144 total"
+          }
+        },
+        {
+          "run": "337a54ca-5b4f-4760-88f8-e599f3b83d40",
+          "startedAt": "2026-11-03T14:39:37.861Z",
+          "acknowledgedAt": "2026-11-03T14:39:44.656Z",
+          "workload": {
+            "name": "retention",
+            "count": 12000,
+            "concurrency": 32,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 6.7951667090000045,
+          "status": {
+            "200": 12000
+          },
+          "accepted": 12000,
+          "acceptedPerSecond": 1765.9610887995348,
+          "httpLatencyMs": {
+            "p50": 16.75537500000064,
+            "p95": 29.817167000001064,
+            "p99": 42.50779099999636
+          },
+          "snapshot": {
+            "rssBytes": 70078464,
+            "rssHighWaterBytes": 78356480,
+            "residentBreakdownBytes": {
+              "Rss": 70078464,
+              "Pss": 69832704,
+              "Pss_Dirty": 29437952,
+              "Pss_Anon": 29405184,
+              "Pss_File": 40427520,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40157184,
+              "Private_Dirty": 29437952,
+              "Referenced": 70062080,
+              "Anonymous": 29405184,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 10000,
+            "issues": 10,
+            "files": "104157184 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n108404744 total"
+          }
+        }
+      ],
+      "cooldown": {
+        "rssBytes": 61628416,
+        "rssHighWaterBytes": 78356480,
+        "residentBreakdownBytes": {
+          "Rss": 61628416,
+          "Pss": 61382656,
+          "Pss_Dirty": 20959232,
+          "Pss_Anon": 20955136,
+          "Pss_File": 40427520,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 483328,
+          "Shared_Dirty": 0,
+          "Private_Clean": 40185856,
+          "Private_Dirty": 20959232,
+          "Referenced": 61612032,
+          "Anonymous": 20955136,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 10000,
+        "issues": 10,
+        "files": "104157184 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n108404744 total"
+      },
+      "memory": [
+        {
+          "phase": "idle",
+          "samples": 20,
+          "medianWorkingSetBytes": 11985223.68,
+          "sampledPeakWorkingSetBytes": 13537116.16
+        },
+        {
+          "phase": "personal",
+          "samples": 59,
+          "medianWorkingSetBytes": 16273899.52,
+          "sampledPeakWorkingSetBytes": 17532190.72
+        },
+        {
+          "phase": "burst",
+          "samples": 2,
+          "medianWorkingSetBytes": 17091788.8,
+          "sampledPeakWorkingSetBytes": 27126661.12
+        },
+        {
+          "phase": "many-issues",
+          "samples": 1,
+          "medianWorkingSetBytes": 27126661.12,
+          "sampledPeakWorkingSetBytes": 27126661.12
+        },
+        {
+          "phase": "large-events",
+          "samples": 3,
+          "medianWorkingSetBytes": 27179089.92,
+          "sampledPeakWorkingSetBytes": 30670848
+        },
+        {
+          "phase": "retention",
+          "samples": 14,
+          "medianWorkingSetBytes": 33082572.8,
+          "sampledPeakWorkingSetBytes": 37182504.96
+        },
+        {
+          "phase": "cooldown",
+          "samples": 31,
+          "medianWorkingSetBytes": 28605153.28,
+          "sampledPeakWorkingSetBytes": 33606860.8
+        }
+      ],
+      "samples": [
+        {
+          "phase": "idle",
+          "elapsedSeconds": 0.5215682909999999,
+          "workingSetBytes": 13537116.16,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.019114833,
+          "workingSetBytes": 13537116.16,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.5193037079999998,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.27
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.020918041,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.27
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.5192804580000003,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.13
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.020276083,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.13
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.519040625,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.019476083000001,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.518970458,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.020116416,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.5194030000000005,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.019152916,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.519276833,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.019078583000001,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.519493416,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.019989625000001,
+          "workingSetBytes": 11995709.44,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.519557708,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.018932957999999,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.519451166000001,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 10.01921225,
+          "workingSetBytes": 11985223.68,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 10.518403583,
+          "workingSetBytes": 13925089.28,
+          "cpuPercent": 0.77
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.018382541000001,
+          "workingSetBytes": 13925089.28,
+          "cpuPercent": 0.77
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.519058999999999,
+          "workingSetBytes": 13631488,
+          "cpuPercent": 5.42
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.019049790999999,
+          "workingSetBytes": 13631488,
+          "cpuPercent": 5.42
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.519183125,
+          "workingSetBytes": 13809745.92,
+          "cpuPercent": 1.25
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.019088208,
+          "workingSetBytes": 13809745.92,
+          "cpuPercent": 1.25
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.519045375,
+          "workingSetBytes": 13841203.2,
+          "cpuPercent": 0.99
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.019251125,
+          "workingSetBytes": 13841203.2,
+          "cpuPercent": 0.99
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.51903875,
+          "workingSetBytes": 13746831.36,
+          "cpuPercent": 0.81
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.019179,
+          "workingSetBytes": 13746831.36,
+          "cpuPercent": 0.81
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.519007250000001,
+          "workingSetBytes": 13893632,
+          "cpuPercent": 0.86
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.018791291000003,
+          "workingSetBytes": 13893632,
+          "cpuPercent": 0.86
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.518504583000002,
+          "workingSetBytes": 14092861.44,
+          "cpuPercent": 1.04
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.0189525,
+          "workingSetBytes": 14092861.44,
+          "cpuPercent": 1.04
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.519486375,
+          "workingSetBytes": 14302576.64,
+          "cpuPercent": 1.39
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.019354665999998,
+          "workingSetBytes": 14302576.64,
+          "cpuPercent": 1.39
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.518893457999997,
+          "workingSetBytes": 14061404.16,
+          "cpuPercent": 1.38
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.018969207999998,
+          "workingSetBytes": 14061404.16,
+          "cpuPercent": 1.38
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.518874125,
+          "workingSetBytes": 14491320.32,
+          "cpuPercent": 0.98
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.018971915999998,
+          "workingSetBytes": 14491320.32,
+          "cpuPercent": 0.98
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.518247958,
+          "workingSetBytes": 15697182.72,
+          "cpuPercent": 0.73
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.018952083,
+          "workingSetBytes": 15697182.72,
+          "cpuPercent": 0.73
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.518478166,
+          "workingSetBytes": 15518924.8,
+          "cpuPercent": 1.02
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.01826225,
+          "workingSetBytes": 15518924.8,
+          "cpuPercent": 1.02
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.518939833,
+          "workingSetBytes": 16273899.52,
+          "cpuPercent": 0.71
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.023336875000002,
+          "workingSetBytes": 16273899.52,
+          "cpuPercent": 0.71
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.518970458,
+          "workingSetBytes": 16221470.72,
+          "cpuPercent": 0.57
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.019021416,
+          "workingSetBytes": 16221470.72,
+          "cpuPercent": 0.57
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.518942583,
+          "workingSetBytes": 16347299.84,
+          "cpuPercent": 0.62
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.018399083,
+          "workingSetBytes": 16347299.84,
+          "cpuPercent": 0.62
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.51900175,
+          "workingSetBytes": 16242442.24,
+          "cpuPercent": 1.2
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.019112416,
+          "workingSetBytes": 16242442.24,
+          "cpuPercent": 1.2
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.519029583,
+          "workingSetBytes": 16504586.24,
+          "cpuPercent": 0.77
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.019661208000002,
+          "workingSetBytes": 16504586.24,
+          "cpuPercent": 0.77
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.518939833,
+          "workingSetBytes": 16808673.28,
+          "cpuPercent": 1.75
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.01899325,
+          "workingSetBytes": 16808673.28,
+          "cpuPercent": 1.75
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.518285208,
+          "workingSetBytes": 16997416.96,
+          "cpuPercent": 0.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.018242416,
+          "workingSetBytes": 16997416.96,
+          "cpuPercent": 0.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.519007125,
+          "workingSetBytes": 16955473.92,
+          "cpuPercent": 0.66
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.018076583000003,
+          "workingSetBytes": 16955473.92,
+          "cpuPercent": 0.66
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.519101458,
+          "workingSetBytes": 17049845.76,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.019016166,
+          "workingSetBytes": 17049845.76,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.518514500000002,
+          "workingSetBytes": 16986931.2,
+          "cpuPercent": 0.49
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.018438041,
+          "workingSetBytes": 16986931.2,
+          "cpuPercent": 0.49
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.518998458,
+          "workingSetBytes": 17175674.88,
+          "cpuPercent": 0.57
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.019318207999994,
+          "workingSetBytes": 17175674.88,
+          "cpuPercent": 0.57
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.518962083,
+          "workingSetBytes": 17322475.52,
+          "cpuPercent": 1.29
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.018975416,
+          "workingSetBytes": 17322475.52,
+          "cpuPercent": 1.29
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.518932583,
+          "workingSetBytes": 17532190.72,
+          "cpuPercent": 0.84
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.019050791,
+          "workingSetBytes": 17532190.72,
+          "cpuPercent": 0.84
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.519184,
+          "workingSetBytes": 17427333.12,
+          "cpuPercent": 0.65
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.018192000000006,
+          "workingSetBytes": 17427333.12,
+          "cpuPercent": 0.65
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.518510625000005,
+          "workingSetBytes": 17406361.6,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.018472083,
+          "workingSetBytes": 17406361.6,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.519181958000004,
+          "workingSetBytes": 17238589.44,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.019003208,
+          "workingSetBytes": 17238589.44,
+          "cpuPercent": 0.6
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.519468708,
+          "workingSetBytes": 17144217.6,
+          "cpuPercent": 0.76
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.018860833,
+          "workingSetBytes": 17144217.6,
+          "cpuPercent": 0.76
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.521806250000004,
+          "workingSetBytes": 17091788.8,
+          "cpuPercent": 1.21
+        },
+        {
+          "phase": "burst",
+          "elapsedSeconds": 40.018946666000005,
+          "workingSetBytes": 17091788.8,
+          "cpuPercent": 1.21
+        },
+        {
+          "phase": "burst",
+          "elapsedSeconds": 40.51801725,
+          "workingSetBytes": 27126661.12,
+          "cpuPercent": 44.5
+        },
+        {
+          "phase": "many-issues",
+          "elapsedSeconds": 41.018454291000005,
+          "workingSetBytes": 27126661.12,
+          "cpuPercent": 44.5
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 41.518928165999995,
+          "workingSetBytes": 27179089.92,
+          "cpuPercent": 94.53
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 42.019151958,
+          "workingSetBytes": 27179089.92,
+          "cpuPercent": 94.53
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 42.519236707999994,
+          "workingSetBytes": 30670848,
+          "cpuPercent": 102.01
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.018917166,
+          "workingSetBytes": 30670848,
+          "cpuPercent": 102.01
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.519354625,
+          "workingSetBytes": 30702305.28,
+          "cpuPercent": 97.52
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.018142458,
+          "workingSetBytes": 30702305.28,
+          "cpuPercent": 97.52
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.51834175,
+          "workingSetBytes": 33082572.8,
+          "cpuPercent": 102.66
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.020020166,
+          "workingSetBytes": 33082572.8,
+          "cpuPercent": 102.66
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.51973125,
+          "workingSetBytes": 33082572.8,
+          "cpuPercent": 104.39
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.018581208,
+          "workingSetBytes": 33082572.8,
+          "cpuPercent": 104.39
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.518951708,
+          "workingSetBytes": 37182504.96,
+          "cpuPercent": 105.81
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.0199625,
+          "workingSetBytes": 37182504.96,
+          "cpuPercent": 105.81
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.518336833,
+          "workingSetBytes": 34036776.96,
+          "cpuPercent": 102.68
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.019731,
+          "workingSetBytes": 34036776.96,
+          "cpuPercent": 102.68
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.518311458,
+          "workingSetBytes": 33690746.88,
+          "cpuPercent": 105.96
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.01836325,
+          "workingSetBytes": 33690746.88,
+          "cpuPercent": 105.96
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.518989625,
+          "workingSetBytes": 33606860.8,
+          "cpuPercent": 101.47
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 50.018953125,
+          "workingSetBytes": 33606860.8,
+          "cpuPercent": 101.47
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 50.526585874999995,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 40.88
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.020814625,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 40.88
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.519317333,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.018320083,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.519173791,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.025129125,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.518979875,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.019038125,
+          "workingSetBytes": 29674700.8,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.519482958,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.15
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.018478875,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.15
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.51944,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.019348875000006,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.518546125,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.17
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.018422375,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.17
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.518251083,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.019303333,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.519249333,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.019139125,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.519293875,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.019071916,
+          "workingSetBytes": 28605153.28,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.519226125,
+          "workingSetBytes": 25375539.2,
+          "cpuPercent": 0.59
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.019187333000005,
+          "workingSetBytes": 25375539.2,
+          "cpuPercent": 0.59
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.518651666,
+          "workingSetBytes": 25344081.92,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.019017583,
+          "workingSetBytes": 25344081.92,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.519141416,
+          "workingSetBytes": 25291653.12,
+          "cpuPercent": 0.05
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.018989000000005,
+          "workingSetBytes": 25291653.12,
+          "cpuPercent": 0.05
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.519208666,
+          "workingSetBytes": 25291653.12,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.019360333,
+          "workingSetBytes": 25291653.12,
+          "cpuPercent": 0.02
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.518082875,
+          "workingSetBytes": 25553797.12,
+          "cpuPercent": 0.28
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 65.019516333,
+          "workingSetBytes": 25553797.12,
+          "cpuPercent": 0.28
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "idle": {
+        "rssBytes": 45428736,
+        "rssHighWaterBytes": 47517696,
+        "residentBreakdownBytes": {
+          "Rss": 45428736,
+          "Pss": 45182976,
+          "Pss_Dirty": 9609216,
+          "Pss_Anon": 9576448,
+          "Pss_File": 35606528,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 483328,
+          "Shared_Dirty": 0,
+          "Private_Clean": 35336192,
+          "Private_Dirty": 9609216,
+          "Referenced": 45428736,
+          "Anonymous": 9576448,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 0,
+        "issues": 0,
+        "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n    57712 /data/tiny-sentry.sqlite-wal\n    94576 total"
+      },
+      "stages": [
+        {
+          "run": "3d5e1215-1b26-4781-8db3-6922417fd612",
+          "startedAt": "2026-11-03T14:40:11.168Z",
+          "acknowledgedAt": "2026-11-03T14:40:40.672Z",
+          "workload": {
+            "name": "personal",
+            "count": 60,
+            "concurrency": 1,
+            "eventBytes": 2048,
+            "groups": 10,
+            "perSecond": 2
+          },
+          "seconds": 29.503597167,
+          "status": {
+            "200": 60
+          },
+          "accepted": 60,
+          "acceptedPerSecond": 2.03365032610703,
+          "httpLatencyMs": {
+            "p50": 5.1244169999990845,
+            "p95": 8.56562500000291,
+            "p99": 13.835040999998455
+          },
+          "snapshot": {
+            "rssBytes": 52465664,
+            "rssHighWaterBytes": 52465664,
+            "residentBreakdownBytes": {
+              "Rss": 52465664,
+              "Pss": 52193280,
+              "Pss_Dirty": 13750272,
+              "Pss_Anon": 13729792,
+              "Pss_File": 38463488,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 536576,
+              "Shared_Dirty": 0,
+              "Private_Clean": 38178816,
+              "Private_Dirty": 13750272,
+              "Referenced": 35217408,
+              "Anonymous": 13729792,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 60,
+            "issues": 10,
+            "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  2319592 /data/tiny-sentry.sqlite-wal\n  2356456 total"
+          }
+        },
+        {
+          "run": "4d84e4c1-037a-4127-9387-41ffe1b2684a",
+          "startedAt": "2026-11-03T14:40:40.851Z",
+          "acknowledgedAt": "2026-11-03T14:40:41.535Z",
+          "workload": {
+            "name": "burst",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.6840858330000047,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2923.6097336340927,
+          "httpLatencyMs": {
+            "p50": 2.00350000000617,
+            "p95": 7.622916000007535,
+            "p99": 10.544917000006535
+          },
+          "snapshot": {
+            "rssBytes": 64282624,
+            "rssHighWaterBytes": 65646592,
+            "residentBreakdownBytes": {
+              "Rss": 64282624,
+              "Pss": 64036864,
+              "Pss_Dirty": 23613440,
+              "Pss_Anon": 23580672,
+              "Pss_File": 40456192,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40185856,
+              "Private_Dirty": 23613440,
+              "Referenced": 49467392,
+              "Anonymous": 23580672,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 2060,
+            "issues": 20,
+            "files": "8507392 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4161232 /data/tiny-sentry.sqlite-wal\n 12701392 total"
+          }
+        },
+        {
+          "run": "0d00e710-e553-449d-8e42-92b8cb97658f",
+          "startedAt": "2026-11-03T14:40:41.666Z",
+          "acknowledgedAt": "2026-11-03T14:40:42.104Z",
+          "workload": {
+            "name": "many-issues",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 1000
+          },
+          "seconds": 0.4382654579999944,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 2281.7221429301253,
+          "httpLatencyMs": {
+            "p50": 2.6131250000034925,
+            "p95": 9.925875000000815,
+            "p99": 12.41554200000246
+          },
+          "snapshot": {
+            "rssBytes": 64745472,
+            "rssHighWaterBytes": 65646592,
+            "residentBreakdownBytes": {
+              "Rss": 64745472,
+              "Pss": 64499712,
+              "Pss_Dirty": 24076288,
+              "Pss_Anon": 24043520,
+              "Pss_File": 40456192,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40185856,
+              "Private_Dirty": 24076288,
+              "Referenced": 49942528,
+              "Anonymous": 24043520,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 3060,
+            "issues": 1020,
+            "files": "12931072 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4161232 /data/tiny-sentry.sqlite-wal\n 17125072 total"
+          }
+        },
+        {
+          "run": "15f00689-0a89-4a29-a470-7bb2eb7693c8",
+          "startedAt": "2026-11-03T14:40:42.250Z",
+          "acknowledgedAt": "2026-11-03T14:40:43.163Z",
+          "workload": {
+            "name": "large-events",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 65536,
+            "groups": 10
+          },
+          "seconds": 0.9131542920000065,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 1095.105185137752,
+          "httpLatencyMs": {
+            "p50": 4.681457999991835,
+            "p95": 18.145916000008583,
+            "p99": 22.56266600001254
+          },
+          "snapshot": {
+            "rssBytes": 69922816,
+            "rssHighWaterBytes": 74166272,
+            "residentBreakdownBytes": {
+              "Rss": 69922816,
+              "Pss": 69677056,
+              "Pss_Dirty": 29188096,
+              "Pss_Anon": 29155328,
+              "Pss_File": 40521728,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 483328,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40251392,
+              "Private_Dirty": 29188096,
+              "Referenced": 55119872,
+              "Anonymous": 29155328,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 4060,
+            "issues": 1030,
+            "files": "77000704 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n 81248264 total"
+          }
+        },
+        {
+          "run": "cf371947-c121-4122-a1dc-faa7346d43a7",
+          "startedAt": "2026-11-03T14:40:43.478Z",
+          "acknowledgedAt": "2026-11-03T14:40:50.562Z",
+          "workload": {
+            "name": "retention",
+            "count": 12000,
+            "concurrency": 32,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 7.083199458000003,
+          "status": {
+            "200": 12000
+          },
+          "accepted": 12000,
+          "acceptedPerSecond": 1694.1496665672457,
+          "httpLatencyMs": {
+            "p50": 17.04200000000128,
+            "p95": 31.380334000001312,
+            "p99": 44.47187500000291
+          },
+          "snapshot": {
+            "rssBytes": 69664768,
+            "rssHighWaterBytes": 76521472,
+            "residentBreakdownBytes": {
+              "Rss": 69664768,
+              "Pss": 69421056,
+              "Pss_Dirty": 29102080,
+              "Pss_Anon": 29069312,
+              "Pss_File": 40351744,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 479232,
+              "Shared_Dirty": 0,
+              "Private_Clean": 40083456,
+              "Private_Dirty": 29102080,
+              "Referenced": 54906880,
+              "Anonymous": 29069312,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 10000,
+            "issues": 10,
+            "files": "104185856 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n108433416 total"
+          }
+        }
+      ],
+      "cooldown": {
+        "rssBytes": 59367424,
+        "rssHighWaterBytes": 76521472,
+        "residentBreakdownBytes": {
+          "Rss": 59367424,
+          "Pss": 59125760,
+          "Pss_Dirty": 18776064,
+          "Pss_Anon": 18771968,
+          "Pss_File": 40353792,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 475136,
+          "Shared_Dirty": 0,
+          "Private_Clean": 40116224,
+          "Private_Dirty": 18776064,
+          "Referenced": 44290048,
+          "Anonymous": 18771968,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 10000,
+        "issues": 10,
+        "files": "104185856 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4214792 /data/tiny-sentry.sqlite-wal\n108433416 total"
+      },
+      "memory": [
+        {
+          "phase": "idle",
+          "samples": 18,
+          "medianWorkingSetBytes": 12299796.48,
+          "sampledPeakWorkingSetBytes": 12299796.48
+        },
+        {
+          "phase": "personal",
+          "samples": 60,
+          "medianWorkingSetBytes": 16221470.72,
+          "sampledPeakWorkingSetBytes": 17699962.88
+        },
+        {
+          "phase": "burst",
+          "samples": 1,
+          "medianWorkingSetBytes": 23907532.8,
+          "sampledPeakWorkingSetBytes": 23907532.8
+        },
+        {
+          "phase": "many-issues",
+          "samples": 2,
+          "medianWorkingSetBytes": 23907532.8,
+          "sampledPeakWorkingSetBytes": 28164751.36
+        },
+        {
+          "phase": "large-events",
+          "samples": 2,
+          "medianWorkingSetBytes": 28164751.36,
+          "sampledPeakWorkingSetBytes": 32809943.04
+        },
+        {
+          "phase": "retention",
+          "samples": 15,
+          "medianWorkingSetBytes": 34508636.16,
+          "sampledPeakWorkingSetBytes": 36154900.48
+        },
+        {
+          "phase": "cooldown",
+          "samples": 31,
+          "medianWorkingSetBytes": 33407631.36,
+          "sampledPeakWorkingSetBytes": 34749808.64
+        }
+      ],
+      "samples": [
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.2193633339999943,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.7187601670000003,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.2196785839999937,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.7184110840000066,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.219036500000002,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.27
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.7190651249999935,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.27
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.218867167000004,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.718976334000006,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.219118291999999,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.7195835840000075,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.218399791999997,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.16
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.718686667000002,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.16
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.218800625000004,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.19
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.717627959000005,
+          "workingSetBytes": 12299796.48,
+          "cpuPercent": 0.19
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.218891667000003,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.718987084000007,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.218980624999997,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.718653917000003,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 10.218218250000005,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 10.719273625000001,
+          "workingSetBytes": 12278824.96,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.219119166999997,
+          "workingSetBytes": 13694402.56,
+          "cpuPercent": 5.8
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.718951333999998,
+          "workingSetBytes": 13694402.56,
+          "cpuPercent": 5.8
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.218844459,
+          "workingSetBytes": 13631488,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.718641749999994,
+          "workingSetBytes": 13631488,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.219267416999996,
+          "workingSetBytes": 13841203.2,
+          "cpuPercent": 0.95
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.718623667000006,
+          "workingSetBytes": 13841203.2,
+          "cpuPercent": 0.95
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.218089416999996,
+          "workingSetBytes": 13799260.16,
+          "cpuPercent": 0.9
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.720641875000002,
+          "workingSetBytes": 13799260.16,
+          "cpuPercent": 0.9
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.218687875000004,
+          "workingSetBytes": 13998489.6,
+          "cpuPercent": 1.18
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.719646124999999,
+          "workingSetBytes": 13998489.6,
+          "cpuPercent": 1.18
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.219469417,
+          "workingSetBytes": 14638120.96,
+          "cpuPercent": 1.03
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.719030584000006,
+          "workingSetBytes": 14638120.96,
+          "cpuPercent": 1.03
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.218665041999994,
+          "workingSetBytes": 14355005.44,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.718721166999995,
+          "workingSetBytes": 14355005.44,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.218950666999998,
+          "workingSetBytes": 14847836.16,
+          "cpuPercent": 1.14
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.718755084000005,
+          "workingSetBytes": 14847836.16,
+          "cpuPercent": 1.14
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.219091417000005,
+          "workingSetBytes": 15057551.36,
+          "cpuPercent": 1.25
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.718737209,
+          "workingSetBytes": 15057551.36,
+          "cpuPercent": 1.25
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.217937374999995,
+          "workingSetBytes": 14763950.08,
+          "cpuPercent": 1.12
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.718866458999997,
+          "workingSetBytes": 14763950.08,
+          "cpuPercent": 1.12
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.218884208999995,
+          "workingSetBytes": 15812526.08,
+          "cpuPercent": 0.99
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.718731499999993,
+          "workingSetBytes": 15812526.08,
+          "cpuPercent": 0.99
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.218740084000004,
+          "workingSetBytes": 15802040.32,
+          "cpuPercent": 1.04
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.718914334,
+          "workingSetBytes": 15802040.32,
+          "cpuPercent": 1.04
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.218788874999998,
+          "workingSetBytes": 16011755.52,
+          "cpuPercent": 0.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.719935167000003,
+          "workingSetBytes": 16011755.52,
+          "cpuPercent": 0.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.220457292000006,
+          "workingSetBytes": 16221470.72,
+          "cpuPercent": 0.8
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.719028042000005,
+          "workingSetBytes": 16221470.72,
+          "cpuPercent": 0.8
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.218040374999998,
+          "workingSetBytes": 16399728.64,
+          "cpuPercent": 1.67
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.719177041999995,
+          "workingSetBytes": 16399728.64,
+          "cpuPercent": 1.67
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.218833375000003,
+          "workingSetBytes": 16567500.8,
+          "cpuPercent": 1.33
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.718814083999998,
+          "workingSetBytes": 16567500.8,
+          "cpuPercent": 1.33
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.219430624999994,
+          "workingSetBytes": 17018388.48,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.719675333999998,
+          "workingSetBytes": 17018388.48,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.218801709000008,
+          "workingSetBytes": 17322475.52,
+          "cpuPercent": 1.27
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.720089667000007,
+          "workingSetBytes": 17322475.52,
+          "cpuPercent": 1.27
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.223235874999997,
+          "workingSetBytes": 17532190.72,
+          "cpuPercent": 1.11
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.718695959000005,
+          "workingSetBytes": 17532190.72,
+          "cpuPercent": 1.11
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.220524959000002,
+          "workingSetBytes": 17479761.92,
+          "cpuPercent": 0.88
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.718175625000004,
+          "workingSetBytes": 17479761.92,
+          "cpuPercent": 0.88
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.218607499999997,
+          "workingSetBytes": 17070817.28,
+          "cpuPercent": 1
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.7182595,
+          "workingSetBytes": 17070817.28,
+          "cpuPercent": 1
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.21864937499999,
+          "workingSetBytes": 17280532.48,
+          "cpuPercent": 0.94
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.718609916999995,
+          "workingSetBytes": 17280532.48,
+          "cpuPercent": 0.94
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.218562792,
+          "workingSetBytes": 17207132.16,
+          "cpuPercent": 0.88
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.718717375000004,
+          "workingSetBytes": 17207132.16,
+          "cpuPercent": 0.88
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.21877625,
+          "workingSetBytes": 17511219.2,
+          "cpuPercent": 1.14
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.718925541999994,
+          "workingSetBytes": 17511219.2,
+          "cpuPercent": 1.14
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.219274042,
+          "workingSetBytes": 17490247.68,
+          "cpuPercent": 1.24
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.719174917,
+          "workingSetBytes": 17490247.68,
+          "cpuPercent": 1.24
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.21860070900001,
+          "workingSetBytes": 17699962.88,
+          "cpuPercent": 1.98
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.718713917,
+          "workingSetBytes": 17699962.88,
+          "cpuPercent": 1.98
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.21936937499999,
+          "workingSetBytes": 17070817.28,
+          "cpuPercent": 0.9
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.718779584,
+          "workingSetBytes": 17070817.28,
+          "cpuPercent": 0.9
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.21899224999999,
+          "workingSetBytes": 16986931.2,
+          "cpuPercent": 1.27
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.718621917,
+          "workingSetBytes": 16986931.2,
+          "cpuPercent": 1.27
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.219327542,
+          "workingSetBytes": 17207132.16,
+          "cpuPercent": 0.78
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.718087958999995,
+          "workingSetBytes": 17207132.16,
+          "cpuPercent": 0.78
+        },
+        {
+          "phase": "burst",
+          "elapsedSeconds": 40.217603499999996,
+          "workingSetBytes": 23907532.8,
+          "cpuPercent": 15.05
+        },
+        {
+          "phase": "many-issues",
+          "elapsedSeconds": 40.718342166999996,
+          "workingSetBytes": 23907532.8,
+          "cpuPercent": 15.05
+        },
+        {
+          "phase": "many-issues",
+          "elapsedSeconds": 41.218573000000006,
+          "workingSetBytes": 28164751.36,
+          "cpuPercent": 96.99
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 41.717822584,
+          "workingSetBytes": 28164751.36,
+          "cpuPercent": 96.99
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 42.218602874999995,
+          "workingSetBytes": 32809943.04,
+          "cpuPercent": 93.59
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 42.718686125000005,
+          "workingSetBytes": 32809943.04,
+          "cpuPercent": 93.59
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.218499459,
+          "workingSetBytes": 32705085.44,
+          "cpuPercent": 95.85
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.718572084,
+          "workingSetBytes": 32705085.44,
+          "cpuPercent": 95.85
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.218717375000004,
+          "workingSetBytes": 32600227.84,
+          "cpuPercent": 92.38
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.71892029199999,
+          "workingSetBytes": 32600227.84,
+          "cpuPercent": 92.38
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.218756500000005,
+          "workingSetBytes": 34508636.16,
+          "cpuPercent": 102.49
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.71888079199999,
+          "workingSetBytes": 34508636.16,
+          "cpuPercent": 102.49
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.218819542,
+          "workingSetBytes": 33816576,
+          "cpuPercent": 104.19
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.71850916699999,
+          "workingSetBytes": 33816576,
+          "cpuPercent": 104.19
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.218698999999994,
+          "workingSetBytes": 35913728,
+          "cpuPercent": 103.68
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.718550292,
+          "workingSetBytes": 35913728,
+          "cpuPercent": 103.68
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.217609624999994,
+          "workingSetBytes": 36154900.48,
+          "cpuPercent": 103.31
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.717580042,
+          "workingSetBytes": 36154900.48,
+          "cpuPercent": 103.31
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.218692874999995,
+          "workingSetBytes": 35777413.12,
+          "cpuPercent": 103.92
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.718599459,
+          "workingSetBytes": 35777413.12,
+          "cpuPercent": 103.92
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 50.218081875,
+          "workingSetBytes": 34749808.64,
+          "cpuPercent": 92.9
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 50.71947966700001,
+          "workingSetBytes": 34749808.64,
+          "cpuPercent": 92.9
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.218731291999994,
+          "workingSetBytes": 33543946.24,
+          "cpuPercent": 2.74
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.718877875000004,
+          "workingSetBytes": 33543946.24,
+          "cpuPercent": 2.74
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.218808042000006,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.26
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.718588625,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.26
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.221836083999996,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.71975329199999,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.21883995900001,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.38
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.718645084,
+          "workingSetBytes": 33428602.88,
+          "cpuPercent": 0.38
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.218196375,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.718822375,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.218299667,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.719754,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.218853208999995,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.718712,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.218750167,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.718114625000005,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.01
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.220079667,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.718782334000004,
+          "workingSetBytes": 33407631.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.2193045,
+          "workingSetBytes": 30681333.76,
+          "cpuPercent": 0.22
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.718573375000005,
+          "workingSetBytes": 30681333.76,
+          "cpuPercent": 0.22
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.220489959,
+          "workingSetBytes": 29527900.16,
+          "cpuPercent": 0.33
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.72033445900001,
+          "workingSetBytes": 29527900.16,
+          "cpuPercent": 0.33
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.219542625,
+          "workingSetBytes": 27755806.72,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.718765792000006,
+          "workingSetBytes": 27755806.72,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.22050075000001,
+          "workingSetBytes": 27619491.84,
+          "cpuPercent": 1.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.718717166999994,
+          "workingSetBytes": 27619491.84,
+          "cpuPercent": 1.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.21856849999999,
+          "workingSetBytes": 24159191.04,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.718609125,
+          "workingSetBytes": 24159191.04,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 65.21784708400001,
+          "workingSetBytes": 27514634.24,
+          "cpuPercent": 1.28
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "idle": {
+        "rssBytes": 45432832,
+        "rssHighWaterBytes": 47747072,
+        "residentBreakdownBytes": {
+          "Rss": 45432832,
+          "Pss": 45193216,
+          "Pss_Dirty": 9633792,
+          "Pss_Anon": 9633792,
+          "Pss_File": 35559424,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 471040,
+          "Shared_Dirty": 0,
+          "Private_Clean": 35328000,
+          "Private_Dirty": 9633792,
+          "Referenced": 45432832,
+          "Anonymous": 9633792,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 0,
+        "issues": 0,
+        "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n    57712 /data/tiny-sentry.sqlite-wal\n    94576 total"
+      },
+      "stages": [
+        {
+          "run": "71b8db2f-2025-42f0-b8a9-da5bcade9bd3",
+          "startedAt": "2026-11-03T14:41:17.166Z",
+          "acknowledgedAt": "2026-11-03T14:41:46.669Z",
+          "workload": {
+            "name": "personal",
+            "count": 60,
+            "concurrency": 1,
+            "eventBytes": 2048,
+            "groups": 10,
+            "perSecond": 2
+          },
+          "seconds": 29.502792166,
+          "status": {
+            "200": 60
+          },
+          "accepted": 60,
+          "acceptedPerSecond": 2.0337058154497663,
+          "httpLatencyMs": {
+            "p50": 5.402082999993581,
+            "p95": 8.67249999998603,
+            "p99": 9.602833000011742
+          },
+          "snapshot": {
+            "rssBytes": 53182464,
+            "rssHighWaterBytes": 53506048,
+            "residentBreakdownBytes": {
+              "Rss": 53182464,
+              "Pss": 52957184,
+              "Pss_Dirty": 14487552,
+              "Pss_Anon": 14467072,
+              "Pss_File": 38490112,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 442368,
+              "Shared_Dirty": 0,
+              "Private_Clean": 38252544,
+              "Private_Dirty": 14487552,
+              "Referenced": 53182464,
+              "Anonymous": 14467072,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 60,
+            "issues": 10,
+            "files": "4096 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  2319592 /data/tiny-sentry.sqlite-wal\n  2356456 total"
+          }
+        },
+        {
+          "run": "05cb65d9-d37d-4bfb-b45c-92fc17dccd4c",
+          "startedAt": "2026-11-03T14:41:46.821Z",
+          "acknowledgedAt": "2026-11-03T14:41:47.466Z",
+          "workload": {
+            "name": "burst",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.6451505419999884,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 3100.051646550482,
+          "httpLatencyMs": {
+            "p50": 1.9234590000123717,
+            "p95": 6.825249999994412,
+            "p99": 9.851874999993015
+          },
+          "snapshot": {
+            "rssBytes": 64438272,
+            "rssHighWaterBytes": 66138112,
+            "residentBreakdownBytes": {
+              "Rss": 64438272,
+              "Pss": 64194560,
+              "Pss_Dirty": 24080384,
+              "Pss_Anon": 24047616,
+              "Pss_File": 40146944,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 479232,
+              "Shared_Dirty": 0,
+              "Private_Clean": 39878656,
+              "Private_Dirty": 24080384,
+              "Referenced": 58146816,
+              "Anonymous": 24047616,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 2060,
+            "issues": 20,
+            "files": "8486912 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4169472 /data/tiny-sentry.sqlite-wal\n 12689152 total"
+          }
+        },
+        {
+          "run": "4e08a9e6-ac2d-4e52-971f-6411d07aa501",
+          "startedAt": "2026-11-03T14:41:47.620Z",
+          "acknowledgedAt": "2026-11-03T14:41:48.028Z",
+          "workload": {
+            "name": "many-issues",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 1000
+          },
+          "seconds": 0.40784908399998676,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 2451.887326048359,
+          "httpLatencyMs": {
+            "p50": 2.5222910000011325,
+            "p95": 8.464708999992581,
+            "p99": 11.020041000010679
+          },
+          "snapshot": {
+            "rssBytes": 63684608,
+            "rssHighWaterBytes": 66158592,
+            "residentBreakdownBytes": {
+              "Rss": 63684608,
+              "Pss": 63453184,
+              "Pss_Dirty": 23326720,
+              "Pss_Anon": 23293952,
+              "Pss_File": 40159232,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 454656,
+              "Shared_Dirty": 0,
+              "Private_Clean": 39903232,
+              "Private_Dirty": 23326720,
+              "Referenced": 58138624,
+              "Anonymous": 23293952,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 3060,
+            "issues": 1020,
+            "files": "12902400 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4169472 /data/tiny-sentry.sqlite-wal\n 17104640 total"
+          }
+        },
+        {
+          "run": "12c4bc5b-8fd3-4e3b-85ec-2d791217b0c0",
+          "startedAt": "2026-11-03T14:41:48.173Z",
+          "acknowledgedAt": "2026-11-03T14:41:49.085Z",
+          "workload": {
+            "name": "large-events",
+            "count": 1000,
+            "concurrency": 8,
+            "eventBytes": 65536,
+            "groups": 10
+          },
+          "seconds": 0.912138249999989,
+          "status": {
+            "200": 1000
+          },
+          "accepted": 1000,
+          "acceptedPerSecond": 1096.3250362541116,
+          "httpLatencyMs": {
+            "p50": 4.359875000023749,
+            "p95": 19.680292000004556,
+            "p99": 23.06254200002877
+          },
+          "snapshot": {
+            "rssBytes": 68399104,
+            "rssHighWaterBytes": 72536064,
+            "residentBreakdownBytes": {
+              "Rss": 68399104,
+              "Pss": 68171776,
+              "Pss_Dirty": 27955200,
+              "Pss_Anon": 27922432,
+              "Pss_File": 40249344,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 446464,
+              "Shared_Dirty": 0,
+              "Private_Clean": 39997440,
+              "Private_Dirty": 27955200,
+              "Referenced": 62877696,
+              "Anonymous": 27922432,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 4060,
+            "issues": 1030,
+            "files": "76595200 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4227152 /data/tiny-sentry.sqlite-wal\n 80855120 total"
+          }
+        },
+        {
+          "run": "78a00f89-dc96-4552-8643-bec1b395f2d6",
+          "startedAt": "2026-11-03T14:41:49.396Z",
+          "acknowledgedAt": "2026-11-03T14:41:56.708Z",
+          "workload": {
+            "name": "retention",
+            "count": 12000,
+            "concurrency": 32,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 7.312561791999993,
+          "status": {
+            "200": 12000
+          },
+          "accepted": 12000,
+          "acceptedPerSecond": 1641.0117741675845,
+          "httpLatencyMs": {
+            "p50": 17.988584000006085,
+            "p95": 33.009250000002794,
+            "p99": 51.10375000000931
+          },
+          "snapshot": {
+            "rssBytes": 70725632,
+            "rssHighWaterBytes": 77418496,
+            "residentBreakdownBytes": {
+              "Rss": 70725632,
+              "Pss": 70494208,
+              "Pss_Dirty": 30523392,
+              "Pss_Anon": 30490624,
+              "Pss_File": 40003584,
+              "Pss_Shmem": 0,
+              "Shared_Clean": 454656,
+              "Shared_Dirty": 0,
+              "Private_Clean": 39747584,
+              "Private_Dirty": 30523392,
+              "Referenced": 65519616,
+              "Anonymous": 30490624,
+              "KSM": 0,
+              "LazyFree": 0,
+              "AnonHugePages": 0,
+              "ShmemPmdMapped": 0,
+              "FilePmdMapped": 0,
+              "Shared_Hugetlb": 0,
+              "Private_Hugetlb": 0,
+              "Swap": 0,
+              "SwapPss": 0,
+              "Locked": 0
+            },
+            "events": 10000,
+            "issues": 10,
+            "files": "104165376 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4227152 /data/tiny-sentry.sqlite-wal\n108425296 total"
+          }
+        }
+      ],
+      "cooldown": {
+        "rssBytes": 61071360,
+        "rssHighWaterBytes": 77418496,
+        "residentBreakdownBytes": {
+          "Rss": 61071360,
+          "Pss": 60825600,
+          "Pss_Dirty": 20840448,
+          "Pss_Anon": 20836352,
+          "Pss_File": 39989248,
+          "Pss_Shmem": 0,
+          "Shared_Clean": 483328,
+          "Shared_Dirty": 0,
+          "Private_Clean": 39747584,
+          "Private_Dirty": 20840448,
+          "Referenced": 55930880,
+          "Anonymous": 20836352,
+          "KSM": 0,
+          "LazyFree": 0,
+          "AnonHugePages": 0,
+          "ShmemPmdMapped": 0,
+          "FilePmdMapped": 0,
+          "Shared_Hugetlb": 0,
+          "Private_Hugetlb": 0,
+          "Swap": 0,
+          "SwapPss": 0,
+          "Locked": 0
+        },
+        "events": 10000,
+        "issues": 10,
+        "files": "104165376 /data/tiny-sentry.sqlite\n    32768 /data/tiny-sentry.sqlite-shm\n  4227152 /data/tiny-sentry.sqlite-wal\n108425296 total"
+      },
+      "memory": [
+        {
+          "phase": "idle",
+          "samples": 20,
+          "medianWorkingSetBytes": 11964252.16,
+          "sampledPeakWorkingSetBytes": 11964252.16
+        },
+        {
+          "phase": "personal",
+          "samples": 59,
+          "medianWorkingSetBytes": 16661872.64,
+          "sampledPeakWorkingSetBytes": 18392023.04
+        },
+        {
+          "phase": "burst",
+          "samples": 2,
+          "medianWorkingSetBytes": 18224250.88,
+          "sampledPeakWorkingSetBytes": 27650949.12
+        },
+        {
+          "phase": "many-issues",
+          "samples": 1,
+          "medianWorkingSetBytes": 27650949.12,
+          "sampledPeakWorkingSetBytes": 27650949.12
+        },
+        {
+          "phase": "large-events",
+          "samples": 2,
+          "medianWorkingSetBytes": 35672555.52,
+          "sampledPeakWorkingSetBytes": 35672555.52
+        },
+        {
+          "phase": "retention",
+          "samples": 16,
+          "medianWorkingSetBytes": 32788971.52,
+          "sampledPeakWorkingSetBytes": 40338718.72
+        },
+        {
+          "phase": "cooldown",
+          "samples": 31,
+          "medianWorkingSetBytes": 30786191.36,
+          "sampledPeakWorkingSetBytes": 31216107.52
+        }
+      ],
+      "samples": [
+        {
+          "phase": "idle",
+          "elapsedSeconds": 0.6648228339999914,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.164244624999992,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 1.6642660419999737,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.25
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.1636345419999854,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.25
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 2.664120124999987,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.1645049589999834,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.14
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 3.6638069589999795,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.164076249999984,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 4.664014874999993,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.165072874999984,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 5.664017208999983,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.164317249999993,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 6.664366833999986,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.08
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.164151208999974,
+          "workingSetBytes": 11964252.16,
+          "cpuPercent": 0.08
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 7.663982041999989,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.12
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.164167958999984,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.12
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 8.664780624999985,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.164779916999978,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 9.663805624999979,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "idle",
+          "elapsedSeconds": 10.163338041999989,
+          "workingSetBytes": 11932794.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 10.66367983399998,
+          "workingSetBytes": 12268339.2,
+          "cpuPercent": 2.02
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.163621374999988,
+          "workingSetBytes": 12268339.2,
+          "cpuPercent": 2.02
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 11.663944541999983,
+          "workingSetBytes": 13159628.8,
+          "cpuPercent": 3.64
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.16451124999998,
+          "workingSetBytes": 13159628.8,
+          "cpuPercent": 3.64
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 12.664217333999986,
+          "workingSetBytes": 13212057.6,
+          "cpuPercent": 1.3
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.164615166999981,
+          "workingSetBytes": 13212057.6,
+          "cpuPercent": 1.3
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 13.664667916999985,
+          "workingSetBytes": 14575206.4,
+          "cpuPercent": 1.43
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.164304458999977,
+          "workingSetBytes": 14575206.4,
+          "cpuPercent": 1.43
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 14.663081124999996,
+          "workingSetBytes": 14963179.52,
+          "cpuPercent": 1.73
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.170841166999978,
+          "workingSetBytes": 14963179.52,
+          "cpuPercent": 1.73
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 15.664444916999987,
+          "workingSetBytes": 15057551.36,
+          "cpuPercent": 1.16
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.164224334,
+          "workingSetBytes": 15057551.36,
+          "cpuPercent": 1.16
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 16.664612208999984,
+          "workingSetBytes": 15235809.28,
+          "cpuPercent": 1.47
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.164628874999995,
+          "workingSetBytes": 15235809.28,
+          "cpuPercent": 1.47
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 17.664134499999985,
+          "workingSetBytes": 15393095.68,
+          "cpuPercent": 1.83
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.164463791999996,
+          "workingSetBytes": 15393095.68,
+          "cpuPercent": 1.83
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 18.667830249999998,
+          "workingSetBytes": 15938355.2,
+          "cpuPercent": 1.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.164714999999998,
+          "workingSetBytes": 15938355.2,
+          "cpuPercent": 1.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 19.663963916999986,
+          "workingSetBytes": 16210984.96,
+          "cpuPercent": 1.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.163955791999992,
+          "workingSetBytes": 16210984.96,
+          "cpuPercent": 1.7
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 20.663915209,
+          "workingSetBytes": 16661872.64,
+          "cpuPercent": 1.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.164377833999986,
+          "workingSetBytes": 16661872.64,
+          "cpuPercent": 1.06
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 21.664191999999982,
+          "workingSetBytes": 16294871.04,
+          "cpuPercent": 0.62
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.164365124999982,
+          "workingSetBytes": 16294871.04,
+          "cpuPercent": 0.62
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 22.663771125,
+          "workingSetBytes": 16536043.52,
+          "cpuPercent": 0.94
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.1644485,
+          "workingSetBytes": 16536043.52,
+          "cpuPercent": 0.94
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 23.664266959,
+          "workingSetBytes": 16378757.12,
+          "cpuPercent": 1.61
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.16419629199998,
+          "workingSetBytes": 16378757.12,
+          "cpuPercent": 1.61
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 24.66398795899999,
+          "workingSetBytes": 16609443.84,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.164336125000002,
+          "workingSetBytes": 16609443.84,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 25.66628449999998,
+          "workingSetBytes": 17154703.36,
+          "cpuPercent": 1.83
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.16341741699999,
+          "workingSetBytes": 17154703.36,
+          "cpuPercent": 1.83
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 26.664361583999998,
+          "workingSetBytes": 17521704.96,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.16472204199998,
+          "workingSetBytes": 17521704.96,
+          "cpuPercent": 1.23
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 27.66364520899998,
+          "workingSetBytes": 17710448.64,
+          "cpuPercent": 1.68
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.16443974999999,
+          "workingSetBytes": 17710448.64,
+          "cpuPercent": 1.68
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 28.664195041999978,
+          "workingSetBytes": 17825792,
+          "cpuPercent": 1.52
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.164099041999986,
+          "workingSetBytes": 17825792,
+          "cpuPercent": 1.52
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 29.664027541999996,
+          "workingSetBytes": 17773363.2,
+          "cpuPercent": 0.81
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.163168083999974,
+          "workingSetBytes": 17773363.2,
+          "cpuPercent": 0.81
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 30.66413829199999,
+          "workingSetBytes": 17983078.4,
+          "cpuPercent": 0.64
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.16352904199998,
+          "workingSetBytes": 17983078.4,
+          "cpuPercent": 0.64
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 31.66391195899999,
+          "workingSetBytes": 17941135.36,
+          "cpuPercent": 0.61
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.16393220899999,
+          "workingSetBytes": 17941135.36,
+          "cpuPercent": 0.61
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 32.66429345899998,
+          "workingSetBytes": 18119393.28,
+          "cpuPercent": 0.51
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.16318391699999,
+          "workingSetBytes": 18119393.28,
+          "cpuPercent": 0.51
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 33.6642935,
+          "workingSetBytes": 17658019.84,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.16424641699999,
+          "workingSetBytes": 17658019.84,
+          "cpuPercent": 1.35
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 34.66411312499997,
+          "workingSetBytes": 17867735.04,
+          "cpuPercent": 0.95
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.16419499999998,
+          "workingSetBytes": 17867735.04,
+          "cpuPercent": 0.95
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 35.66574987499998,
+          "workingSetBytes": 17815306.24,
+          "cpuPercent": 1.11
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.16412366699998,
+          "workingSetBytes": 17815306.24,
+          "cpuPercent": 1.11
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 36.664346458999994,
+          "workingSetBytes": 18308136.96,
+          "cpuPercent": 1.19
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.16429216699998,
+          "workingSetBytes": 18308136.96,
+          "cpuPercent": 1.19
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 37.66449062499998,
+          "workingSetBytes": 18192793.6,
+          "cpuPercent": 1.26
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.163785125,
+          "workingSetBytes": 18192793.6,
+          "cpuPercent": 1.26
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 38.664201666999986,
+          "workingSetBytes": 18392023.04,
+          "cpuPercent": 0.76
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.16405270899998,
+          "workingSetBytes": 18392023.04,
+          "cpuPercent": 0.76
+        },
+        {
+          "phase": "personal",
+          "elapsedSeconds": 39.663926542,
+          "workingSetBytes": 18224250.88,
+          "cpuPercent": 0.51
+        },
+        {
+          "phase": "burst",
+          "elapsedSeconds": 40.16347074999998,
+          "workingSetBytes": 18224250.88,
+          "cpuPercent": 0.51
+        },
+        {
+          "phase": "burst",
+          "elapsedSeconds": 40.665010749999986,
+          "workingSetBytes": 27650949.12,
+          "cpuPercent": 52.8
+        },
+        {
+          "phase": "many-issues",
+          "elapsedSeconds": 41.16388879199998,
+          "workingSetBytes": 27650949.12,
+          "cpuPercent": 52.8
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 41.664204749999975,
+          "workingSetBytes": 35672555.52,
+          "cpuPercent": 92.6
+        },
+        {
+          "phase": "large-events",
+          "elapsedSeconds": 42.16409183399999,
+          "workingSetBytes": 35672555.52,
+          "cpuPercent": 92.6
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 42.663163833999974,
+          "workingSetBytes": 31404851.2,
+          "cpuPercent": 97.15
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.16361445899997,
+          "workingSetBytes": 31404851.2,
+          "cpuPercent": 97.15
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 43.66428479199999,
+          "workingSetBytes": 30754734.08,
+          "cpuPercent": 105.67
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.16407495899999,
+          "workingSetBytes": 30754734.08,
+          "cpuPercent": 105.67
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 44.663928083999984,
+          "workingSetBytes": 32788971.52,
+          "cpuPercent": 105.26
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.173416874999994,
+          "workingSetBytes": 32788971.52,
+          "cpuPercent": 105.26
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 45.66390908399998,
+          "workingSetBytes": 32579256.32,
+          "cpuPercent": 104.16
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.16340762499999,
+          "workingSetBytes": 32579256.32,
+          "cpuPercent": 104.16
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 46.664707834,
+          "workingSetBytes": 39374028.8,
+          "cpuPercent": 104.8
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.163812209,
+          "workingSetBytes": 39374028.8,
+          "cpuPercent": 104.8
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 47.66291170899998,
+          "workingSetBytes": 34382807.04,
+          "cpuPercent": 103.91
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.16294074999998,
+          "workingSetBytes": 34382807.04,
+          "cpuPercent": 103.91
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 48.663914916999985,
+          "workingSetBytes": 33564917.76,
+          "cpuPercent": 102.93
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.163071916999996,
+          "workingSetBytes": 33564917.76,
+          "cpuPercent": 102.93
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 49.66322662499998,
+          "workingSetBytes": 40338718.72,
+          "cpuPercent": 104.42
+        },
+        {
+          "phase": "retention",
+          "elapsedSeconds": 50.163891041999975,
+          "workingSetBytes": 40338718.72,
+          "cpuPercent": 104.42
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 50.663917833999996,
+          "workingSetBytes": 31216107.52,
+          "cpuPercent": 74.82
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.163924791999975,
+          "workingSetBytes": 31216107.52,
+          "cpuPercent": 74.82
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 51.66389808399999,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.24
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.16393045899999,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.24
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 52.66442083399999,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.163986875,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.11
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 53.663612459,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.162970916999996,
+          "workingSetBytes": 30807162.88,
+          "cpuPercent": 0.06
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 54.66386320899997,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.163975749999985,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 55.664401208999976,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.16442470899999,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 56.66443220899999,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.12
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.16416191699999,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.12
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 57.663954084,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.164417791999995,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.1
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 58.66404962499998,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.13
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.164022999999986,
+          "workingSetBytes": 30786191.36,
+          "cpuPercent": 0.13
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 59.66426799999998,
+          "workingSetBytes": 30775705.6,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.164019374999974,
+          "workingSetBytes": 30775705.6,
+          "cpuPercent": 0.07
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 60.664092083999975,
+          "workingSetBytes": 26140999.68,
+          "cpuPercent": 0.56
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.164184584000004,
+          "workingSetBytes": 26140999.68,
+          "cpuPercent": 0.56
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 61.664798125000004,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.16549737499998,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 62.664643583999975,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.16415483399999,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.03
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 63.664159334,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.16391408399998,
+          "workingSetBytes": 26067599.36,
+          "cpuPercent": 0.09
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 64.66395412499999,
+          "workingSetBytes": 26046627.84,
+          "cpuPercent": 0.17
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 65.16437199999997,
+          "workingSetBytes": 26046627.84,
+          "cpuPercent": 0.17
+        },
+        {
+          "phase": "cooldown",
+          "elapsedSeconds": 65.66411779199997,
+          "workingSetBytes": 25973227.52,
+          "cpuPercent": 14.29
+        }
+      ]
+    }
+  ]
+}
