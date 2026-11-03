@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import type { Config } from "./config";
 import { prepareEvent, type PreparedEvent } from "./event";
+import { createIngestor } from "./ingestion";
 import { parseEnvelope, parseObject, readBody, type JsonObject } from "./protocol";
 import { Store, type Notice } from "./store";
 
@@ -30,6 +31,7 @@ function issueId(c: Context) {
 
 export function createApp(config: Config, store: Store) {
   const app = new Hono();
+  const persist = createIngestor(store, config.maxRequestBytes * 2);
   const buckets = new Map<string, { window: number; count: number }>();
   let webhooks = 0;
 
@@ -118,7 +120,7 @@ export function createApp(config: Config, store: Store) {
       const event = prepareEvent(input, config.maxEventBytes);
       if (event) events.push(event);
     }
-    const notices = store.ingest(project, events);
+    const notices = await persist(project, events);
     void notify(notices);
     return c.json({ id: events[0]?.id ?? null });
   }

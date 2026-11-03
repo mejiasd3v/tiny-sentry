@@ -1,5 +1,7 @@
 # Error-ingestion benchmark and memory analysis
 
+For the current Bun 1.4.4 implementation, see the [matched before/after optimization benchmark](PERFORMANCE.md). The Sentry comparison and full memory suite below remain historical Bun 1.4.2 results; Sentry has not been rerun against the optimized version.
+
 This compares the narrow job tiny-sentry implements: receiving JSON exception envelopes, grouping them with explicit fingerprints, retaining events, and retrieving them through an API. The Sentry baseline is **self-hosted Sentry 26.10.1 in its official errors-only mode**, not the full-feature deployment or Sentry SaaS.
 
 ## Measured comparison, 2026-11-03

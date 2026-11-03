@@ -18,6 +18,8 @@
     "benchmark:load": "bun scripts/benchmark-load.ts",
     "benchmark:report": "bun scripts/benchmark-report.ts",
     "benchmark:compare": "bun scripts/benchmark-compare.ts",
+    "benchmark:performance": "bun scripts/benchmark-performance.ts",
+    "benchmark:performance:report": "bun scripts/benchmark-performance-report.ts",
     "typecheck": "tsc --noEmit",
     "check": "bun run typecheck && bun test"
   },

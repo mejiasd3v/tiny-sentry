@@ -2,7 +2,7 @@
 
 Headless error tracking for personal projects. Keep your Sentry SDK, change its DSN, and send errors to one small service.
 
-**Bun + TypeScript + Hono + SQLite.** Hono is the only runtime dependency. No dashboard, Postgres, Redis, queue, or separate worker. Inspect errors with the CLI or JSON API.
+**Bun + TypeScript + Hono + SQLite.** Hono is the only runtime dependency. No dashboard or separate database, broker, or worker service. Inspect errors with the CLI or JSON API.
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/github)
 
@@ -49,7 +49,7 @@ Start with the defaults: 14-day retention, 10,000 events across all projects, a 
 
 Railway's **Serverless** setting can let an idle service sleep. This service has no periodic outbound polling. Waking adds latency and can exceed a short SDK flush deadline, especially when reporting from a short-lived process. Keep it always on if delivery matters more than the idle savings. Persistent data stays on the volume through sleep.
 
-Local Linux ARM64 runs measured about **43 MiB of process RSS at idle** and a **75 MiB high-water mark under load**, inside a 128 MiB container limit. See the [memory analysis and scoped Sentry benchmark](benchmarks/README.md) for workloads, raw results, cost interpretation, and limitations.
+The original Bun 1.4.2 Linux ARM64 runs measured about **43 MiB of process RSS at idle** and a **75 MiB high-water mark under load**, inside a 128 MiB container limit. See the [memory analysis and scoped Sentry benchmark](benchmarks/README.md) and [Bun 1.4.4 optimization measurements](benchmarks/PERFORMANCE.md) for workloads, raw results, and limitations.
 
 Railway bills actual resources and volume usage, subject to your plan and included credits. See [current Railway pricing](https://docs.railway.com/pricing/plans); a small service does not guarantee a free account or a fixed monthly bill. Set a Railway usage limit. Check the service's measured memory and CPU before changing limits.
 
@@ -180,6 +180,10 @@ The issue also includes fingerprint, level, and timestamps. Set `WEBHOOK_TOKEN` 
 | `TINY_SENTRY_URL` | `http://localhost:3000` | CLI target; not used by the server |
 
 Retention runs at startup, hourly, and after ingestion. The oldest events are removed first; groups disappear when no retained events remain. Counts on an existing group include pruned occurrences. Deleted SQLite pages are reused; the database file does not automatically shrink. The page cap excludes WAL/SHM files and backups, so leave volume headroom. A full database returns HTTP 507 rather than acknowledging an unsaved error. The database must fit the configured cap at startup.
+
+Concurrent ingestion requests can share a SQLite commit, with up to 32 requests and a waiting payload budget of twice `MAX_REQUEST_BYTES`. An individual request larger than that budget flushes immediately. Batching uses the next event-loop turn with no fixed timer delay. Responses wait for the commit; if it fails, every request sharing that commit fails and can be retried. Retention and deduplication still run in request order inside the transaction. SQLite uses WAL with `synchronous=NORMAL`, which does not guarantee survival of host power loss.
+
+Startup automatically upgrades existing databases to schema version 2, adding transactional retention counters and cleanup triggers. Older tiny-sentry versions refuse to open this schema. Keep a pre-upgrade backup if you need to roll back to an older image.
 
 Limits protect small deployments; they do not provide abuse protection for a publicly known DSN. Requests with bad keys to a known project count against its rate limit. Sentry-compatible `429` responses include retry headers. Use edge access controls if you need stronger abuse protection. Management tokens have access to every project on this instance; there are no user accounts or per-project admin permissions.
 

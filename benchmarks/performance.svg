@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+<title id="title">tiny-sentry before and after optimization</title>
+<desc id="desc">Median HTTP acknowledgements per second across 3 runs; higher is better. below-cap: before 3924, optimized 6251. at-cap: before 2284, optimized 3909. many-issues: before 1398, optimized 3309. Sentry was not rerun.</desc>
+<rect width="760" height="430" rx="12" fill="#0f172a"/>
+<g font-family="system-ui, sans-serif">
+<text x="20" y="34" fill="#f8fafc" font-size="22" font-weight="600">tiny-sentry: measured ingestion throughput</text>
+<text x="20" y="61" fill="#94a3b8" font-size="13">Bun 1.4.4 · 1 CPU / 128 MiB · median of 3 runs · local Linux ARM64</text>
+<text x="20" y="89" fill="#94a3b8" font-size="13">Gray: before · blue: optimized · same workload and resource limits</text>
+<text x="20" y="137" fill="#e2e8f0" font-size="14">below-cap</text><rect x="145" y="111" width="246.6372119709156" height="22" rx="2" fill="#64748b"/><text x="399.6372119709156" y="127" fill="#e2e8f0" font-size="13">3924/s</text>
+<rect x="145" y="139" width="392.90461924124435" height="22" rx="2" fill="#38bdf8"/><text x="545.9046192412443" y="155" fill="#e2e8f0" font-size="13">6251/s</text>
+<text x="20" y="222" fill="#e2e8f0" font-size="14">at-cap</text><rect x="145" y="196" width="143.54862998389777" height="22" rx="2" fill="#64748b"/><text x="296.54862998389774" y="212" fill="#e2e8f0" font-size="13">2284/s</text>
+<rect x="145" y="224" width="245.72714869281305" height="22" rx="2" fill="#38bdf8"/><text x="398.72714869281305" y="240" fill="#e2e8f0" font-size="13">3909/s</text>
+<text x="20" y="307" fill="#e2e8f0" font-size="14">many-issues</text><rect x="145" y="281" width="87.86414149461332" height="22" rx="2" fill="#64748b"/><text x="240.8641414946133" y="297" fill="#e2e8f0" font-size="13">1398/s</text>
+<rect x="145" y="309" width="208.01451995811357" height="22" rx="2" fill="#38bdf8"/><text x="361.01451995811357" y="325" fill="#e2e8f0" font-size="13">3309/s</text>
+<text x="20" y="392" fill="#94a3b8" font-size="12">Linear scale from zero to 7000/s. Synthetic closed-loop workload; not a capacity guarantee.</text>
+<text x="20" y="413" fill="#94a3b8" font-size="12">This compares tiny-sentry versions. It does not establish a performance win over Sentry.</text>
+</g></svg>

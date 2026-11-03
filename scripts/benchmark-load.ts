@@ -23,7 +23,7 @@ export function percentile(values: number[], fraction: number) {
   return sorted[Math.max(0, Math.ceil(sorted.length * fraction) - 1)]!;
 }
 
-export async function load(dsn: string, workload: Workload) {
+export async function load(dsn: string, workload: Workload, observe?: (id: string, started: number) => Promise<void>) {
   const target = new URL(dsn);
   assert(["http:", "https:"].includes(target.protocol));
   const project = target.pathname.split("/").pop();
@@ -61,6 +61,7 @@ export async function load(dsn: string, workload: Workload) {
       const payload = JSON.stringify(event);
       const body = `${JSON.stringify({ event_id: id })}\n${JSON.stringify({ type: "event", length: Buffer.byteLength(payload) })}\n${payload}\n`;
       const before = performance.now();
+      let accepted = false;
       try {
         const response = await fetch(endpoint, {
           method: "POST", headers: { "Content-Type": "application/x-sentry-envelope" }, body,
@@ -68,11 +69,12 @@ export async function load(dsn: string, workload: Workload) {
         });
         await response.arrayBuffer();
         status[response.status] = (status[response.status] ?? 0) + 1;
-        if (response.ok) ids.push(id);
+        if (response.ok) { ids.push(id); accepted = true; }
       } catch {
         status.network_error = (status.network_error ?? 0) + 1;
       }
       latencies.push(performance.now() - before);
+      if (accepted && observe) await observe(id, before);
     }
   }));
   const seconds = (performance.now() - started) / 1000;
@@ -80,6 +82,39 @@ export async function load(dsn: string, workload: Workload) {
     run, startedAt, acknowledgedAt: new Date().toISOString(), ids, workload, seconds, status, accepted: ids.length,
     acceptedPerSecond: ids.length / seconds,
     httpLatencyMs: { p50: percentile(latencies, 0.5), p95: percentile(latencies, 0.95), p99: percentile(latencies, 0.99) },
+  };
+}
+
+// A separate paired POST/GET workload. Its throughput includes query time and
+// must not be presented as ingestion capacity. Polling gives an upper bound.
+export async function visibility(dsn: string, api: string, token: string, workload: Workload) {
+  assert(api.includes("{id}"), "Event API must include {id}");
+  const times: number[] = [];
+  let queries = 0;
+  let missing = 0;
+  const result = await load(dsn, workload, async (id, started) => {
+    const deadline = performance.now() + 120_000;
+    while (performance.now() < deadline) {
+      const response = await fetch(api.replace("{id}", id), {
+        headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(5000),
+      });
+      queries++;
+      if (response.ok) {
+        const value = await response.json() as { eventID?: string; event?: { event_id?: string } };
+        assert.equal(value.eventID ?? value.event?.event_id, id, "API returned a different event");
+        times.push(performance.now() - started);
+        return;
+      }
+      await response.arrayBuffer();
+      assert.equal(response.status, 404, `Unexpected visibility HTTP ${response.status}`);
+      await Bun.sleep(5);
+    }
+    missing++;
+  });
+  const { ids, acceptedPerSecond, ...summary } = result;
+  return { ...summary, verified: times.length, missing, queries,
+    timeToQueryMs: times.length ? { p50: percentile(times, 0.5), p95: percentile(times, 0.95), p99: percentile(times, 0.99) } : null,
+    note: "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity.",
   };
 }
 

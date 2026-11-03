@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
+import { Database } from "bun:sqlite";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -181,6 +182,36 @@ describe("authentication, limits and privacy", () => {
 });
 
 describe("issue lifecycle and durable storage", () => {
+  test.each([512, 65536])("concurrent requests acknowledge committed, deduplicated, project-isolated events (body limit %i)", async (maxRequestBytes) => {
+    const directory = mkdtempSync(join(tmpdir(), "tiny-sentry-concurrent-"));
+    directories.push(directory);
+    const { send, api, config } = fixture({ dbPath: join(directory, "events.sqlite"), maxRequestBytes, maxEventBytes: 512 });
+    const reader = new Database(config.dbPath, { readonly: true });
+    try {
+      await Promise.all(Array.from({ length: 96 }, async (_, index) => {
+        const project = index < 48 ? "1" : "2";
+        const input = event((index % 24).toString(16).padStart(32, "0"));
+        expect((await send(input, project)).status).toBe(200);
+        // An independent connection can only observe committed transactions.
+        expect(reader.query("SELECT event_id FROM events WHERE project_id=? AND event_id=?").get(project, input.event_id))
+          .toEqual({ event_id: input.event_id });
+      }));
+      expect(await (await api("/stats")).json()).toEqual({ events: 48, issues: 2 });
+      expect((await (await api("/issues")).json()).issues.map((issue: { event_count: number }) => issue.event_count)).toEqual([24, 24]);
+    } finally { reader.close(); }
+  });
+
+  test("a full database rolls back every request sharing a commit and permits a later retry", async () => {
+    const { send, api } = fixture({ maxDbMb: 1 });
+    const responses = await Promise.all(Array.from({ length: 32 }, (_, index) => send({
+      event_id: index.toString(16).padStart(32, "0"), message: "concurrent storage boundary", extra: { payload: "x".repeat(50_000) },
+    })));
+    expect(responses.map((response) => response.status)).toEqual(Array(32).fill(507));
+    expect(await (await api("/stats")).json()).toEqual({ events: 0, issues: 0 });
+    expect((await send(event())).status).toBe(200);
+    expect(await (await api("/stats")).json()).toEqual({ events: 1, issues: 1 });
+  });
+
   test("deduplicates event IDs, groups changing messages, and reopens resolved issues", async () => {
     const { send, api } = fixture();
     await send(event());
@@ -248,7 +279,7 @@ describe("issue lifecycle and durable storage", () => {
   });
 
   test("returns 507 on a full database and rolls back the unacknowledged occurrence", async () => {
-    const { send, api } = fixture({ maxDbMb: 1 });
+    const { send, api, store } = fixture({ maxDbMb: 1 });
     let full = false;
     let accepted = 0;
     for (let index = 0; index < 40; index++) {
@@ -265,6 +296,9 @@ describe("issue lifecycle and durable storage", () => {
     expect(full).toBe(true);
     expect(await (await api("/stats")).json()).toEqual({ events: accepted, issues: 1 });
     expect((await (await api("/issues")).json()).issues[0].event_count).toBe(accepted);
+    store.prune(Date.now() + 15 * 86_400_000);
+    expect((await send(event())).status).toBe(200);
+    expect(await (await api("/stats")).json()).toEqual({ events: 1, issues: 1 });
   });
 
   test("notifies new issues and regressions; a failing webhook does not reject ingestion", async () => {

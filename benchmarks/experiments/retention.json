@@ -1,0 +1,854 @@
+{
+  "environment": {
+    "recordedAt": "2026-11-03T14:56:24.600Z",
+    "generatorBun": "1.4.4",
+    "host": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "cpu": "Apple M2 Max"
+    },
+    "docker": {
+      "version": "29.8.2",
+      "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+      "arch": "aarch64",
+      "cpus": 12,
+      "memoryBytes": 8392343552
+    },
+    "images": [
+      {
+        "name": "tiny-sentry:perf-before",
+        "id": "sha256:6ca623150c3ea45da645b270780eb863b87ca54657f0b181e2e2a0ae594df972",
+        "bun": "1.4.4",
+        "sourceSha256": "6954ffe293b95b267a25efbf454cf6d481908c2840d024ebdec63b4d44fbe3a9  /app/src/app.ts\na9e82a2440c15ea0f9d08d8f18ed21e4f6137df559a1b044976e32daee7e8de9  /app/src/cli.ts\n975420628e057af484e90dde6639be09c0c84e0a56a7f8d511e9b766794bcdf2  /app/src/config.ts\nf780cdc43368a7d23dd2094f33a4573fe70a20371679b26b95c78c9dcaffcf8e  /app/src/event.ts\n37988af76dfbdd5ab9a625fc77fb922eac528ae9fe300624ed0c91277696b7ca  /app/src/protocol.ts\n74185bddaffff6a69156b65e8c17bb8bbafd6bc7f4a280af4ab1c57d11ccaa8f  /app/src/server.ts\n5bb4b55cf3600ef3595ae8382ef8251b378da70be37a5e07dcd29a8e69f32017  /app/src/store.ts"
+      },
+      {
+        "name": "tiny-sentry:perf-retention",
+        "id": "sha256:92592eb331fb961199f490d0af1d6a1776c1ccf53a949e0784c038e9e25da447",
+        "bun": "1.4.4",
+        "sourceSha256": "6954ffe293b95b267a25efbf454cf6d481908c2840d024ebdec63b4d44fbe3a9  /app/src/app.ts\na9e82a2440c15ea0f9d08d8f18ed21e4f6137df559a1b044976e32daee7e8de9  /app/src/cli.ts\n975420628e057af484e90dde6639be09c0c84e0a56a7f8d511e9b766794bcdf2  /app/src/config.ts\nf780cdc43368a7d23dd2094f33a4573fe70a20371679b26b95c78c9dcaffcf8e  /app/src/event.ts\n37988af76dfbdd5ab9a625fc77fb922eac528ae9fe300624ed0c91277696b7ca  /app/src/protocol.ts\n74185bddaffff6a69156b65e8c17bb8bbafd6bc7f4a280af4ab1c57d11ccaa8f  /app/src/server.ts\n3fd4403e3b6cd2463e881d0fdf39a48678ca6581920dba2fbe6c8ac870904b78  /app/src/store.ts"
+      }
+    ],
+    "limits": {
+      "cpus": 1,
+      "memoryMiB": 128,
+      "swap": false,
+      "maxEvents": 10000,
+      "maxDbMiB": 256
+    },
+    "storage": "Fresh Docker named volume per run; no host bind mount",
+    "repetitions": 3,
+    "sourceHashesRecordedAfterRun": true
+  },
+  "runs": [
+    {
+      "repeat": 1,
+      "image": "tiny-sentry:perf-before",
+      "stages": [
+        {
+          "run": "c48c8b21-bd7a-44fe-a54d-e5cd389c2b75",
+          "startedAt": "2026-11-03T14:56:26.751Z",
+          "acknowledgedAt": "2026-11-03T14:56:27.246Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.4944725410000001,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4044.7139813978056,
+          "httpLatencyMs": {
+            "p50": 1.128125000000182,
+            "p95": 9.745750000000044,
+            "p99": 12.148458000000119
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.12558308299999998,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "21.47MiB / 128MiB",
+            "rssKiB": 58988,
+            "rssHighWaterKiB": 65640,
+            "cpuUsageUsec": 309571
+          },
+          "after": {
+            "dockerMemory": "23MiB / 128MiB",
+            "rssKiB": 60516,
+            "rssHighWaterKiB": 70356,
+            "cpuUsageUsec": 790130
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "5b6dab57-a7d5-4760-b4de-dc15f3d40597",
+          "startedAt": "2026-11-03T14:56:31.896Z",
+          "acknowledgedAt": "2026-11-03T14:56:32.741Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.8444767919999995,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2368.330330622042,
+          "httpLatencyMs": {
+            "p50": 1.7056249999995998,
+            "p95": 13.957499999999527,
+            "p99": 17.577166999999463
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.09090974999999889,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "22.76MiB / 128MiB",
+            "rssKiB": 59916,
+            "rssHighWaterKiB": 71384,
+            "cpuUsageUsec": 2385306
+          },
+          "after": {
+            "dockerMemory": "25.32MiB / 128MiB",
+            "rssKiB": 62220,
+            "rssHighWaterKiB": 71512,
+            "cpuUsageUsec": 3093570
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "7ad9d3ea-b200-43bd-ba7c-2cc760d36879",
+        "startedAt": "2026-11-03T14:56:33.962Z",
+        "acknowledgedAt": "2026-11-03T14:56:34.080Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.11784179200000108,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.4286250000004657,
+          "p95": 12.804915999999139,
+          "p99": 27.85162500000115
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.529041000001598,
+          "p95": 19.410541000001103,
+          "p99": 28.732458000000406
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "23.99MiB / 128MiB",
+          "rssKiB": 60812,
+          "rssHighWaterKiB": 71512,
+          "cpuUsageUsec": 3196576
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    },
+    {
+      "repeat": 1,
+      "image": "tiny-sentry:perf-retention",
+      "stages": [
+        {
+          "run": "fe6033b2-0998-40c2-b56f-dcf5edf099c1",
+          "startedAt": "2026-11-03T14:56:38.008Z",
+          "acknowledgedAt": "2026-11-03T14:56:38.476Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.46764854200000083,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4276.715995834317,
+          "httpLatencyMs": {
+            "p50": 1.028041999999914,
+            "p95": 9.232208000001265,
+            "p99": 11.909499999999753
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.10250995900000089,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "20.13MiB / 128MiB",
+            "rssKiB": 58028,
+            "rssHighWaterKiB": 64012,
+            "cpuUsageUsec": 267308
+          },
+          "after": {
+            "dockerMemory": "23.99MiB / 128MiB",
+            "rssKiB": 61484,
+            "rssHighWaterKiB": 69520,
+            "cpuUsageUsec": 701497
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "640657c7-cf2b-4b8f-929b-b3763164be0b",
+          "startedAt": "2026-11-03T14:56:42.841Z",
+          "acknowledgedAt": "2026-11-03T14:56:43.625Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.7841147079999974,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2550.6472198452966,
+          "httpLatencyMs": {
+            "p50": 1.3695000000006985,
+            "p95": 13.04054200000246,
+            "p99": 16.15129099999831
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.10951491600000009,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "23.28MiB / 128MiB",
+            "rssKiB": 59512,
+            "rssHighWaterKiB": 70616,
+            "cpuUsageUsec": 1964110
+          },
+          "after": {
+            "dockerMemory": "26.07MiB / 128MiB",
+            "rssKiB": 62484,
+            "rssHighWaterKiB": 72072,
+            "cpuUsageUsec": 2582880
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "85da5003-ed3a-4f3e-95e8-d6c632ff99fd",
+        "startedAt": "2026-11-03T14:56:44.875Z",
+        "acknowledgedAt": "2026-11-03T14:56:44.975Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.0994554160000007,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.1384160000015981,
+          "p95": 13.726833000000624,
+          "p99": 18.858749999999418
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.0943329999972775,
+          "p95": 16.87304199999926,
+          "p99": 20.353667000003043
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "22.19MiB / 128MiB",
+          "rssKiB": 58500,
+          "rssHighWaterKiB": 72072,
+          "cpuUsageUsec": 2676495
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    },
+    {
+      "repeat": 2,
+      "image": "tiny-sentry:perf-retention",
+      "stages": [
+        {
+          "run": "5fb652da-3815-47a0-861b-3b7c2dd76500",
+          "startedAt": "2026-11-03T14:56:48.890Z",
+          "acknowledgedAt": "2026-11-03T14:56:49.383Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.49285562500000013,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4057.983511905742,
+          "httpLatencyMs": {
+            "p50": 1.0893749999995634,
+            "p95": 8.05108299999847,
+            "p99": 12.520333000000392
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.1533222919999971,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "20.84MiB / 128MiB",
+            "rssKiB": 58884,
+            "rssHighWaterKiB": 65272,
+            "cpuUsageUsec": 269913
+          },
+          "after": {
+            "dockerMemory": "22.63MiB / 128MiB",
+            "rssKiB": 60164,
+            "rssHighWaterKiB": 68840,
+            "cpuUsageUsec": 780358
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "e432e9ed-e121-4685-ab1e-8cd9fdd16768",
+          "startedAt": "2026-11-03T14:56:53.653Z",
+          "acknowledgedAt": "2026-11-03T14:56:54.354Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.7002112500000003,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2856.2808723795843,
+          "httpLatencyMs": {
+            "p50": 1.3410000000003492,
+            "p95": 11.099874999999884,
+            "p99": 14.3247080000001
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.09711445800000001,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "24.46MiB / 128MiB",
+            "rssKiB": 61196,
+            "rssHighWaterKiB": 73864,
+            "cpuUsageUsec": 2012181
+          },
+          "after": {
+            "dockerMemory": "25.87MiB / 128MiB",
+            "rssKiB": 62296,
+            "rssHighWaterKiB": 73864,
+            "cpuUsageUsec": 2580471
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "44240c91-76b1-4189-86fe-ec8a9b142f7a",
+        "startedAt": "2026-11-03T14:56:55.659Z",
+        "acknowledgedAt": "2026-11-03T14:56:55.776Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.11715541600000143,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.1873749999977008,
+          "p95": 12.843917000001966,
+          "p99": 18.571500000001834
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.3685420000001614,
+          "p95": 19.388542000000598,
+          "p99": 21.586083000001963
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "23.46MiB / 128MiB",
+          "rssKiB": 59572,
+          "rssHighWaterKiB": 73864,
+          "cpuUsageUsec": 2681054
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    },
+    {
+      "repeat": 2,
+      "image": "tiny-sentry:perf-before",
+      "stages": [
+        {
+          "run": "afd50bb9-bf2f-45d8-a7a0-9437a19c367b",
+          "startedAt": "2026-11-03T14:56:59.671Z",
+          "acknowledgedAt": "2026-11-03T14:57:00.142Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.4703346670000028,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4252.291273269015,
+          "httpLatencyMs": {
+            "p50": 1.0935420000023441,
+            "p95": 9.168375000001106,
+            "p99": 11.96520800000144
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.098700665999997,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "20.91MiB / 128MiB",
+            "rssKiB": 57944,
+            "rssHighWaterKiB": 64488,
+            "cpuUsageUsec": 271752
+          },
+          "after": {
+            "dockerMemory": "25.11MiB / 128MiB",
+            "rssKiB": 61748,
+            "rssHighWaterKiB": 69112,
+            "cpuUsageUsec": 709405
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "d60537a2-e59a-4cd4-a180-c25ce4e9a9d4",
+          "startedAt": "2026-11-03T14:57:04.639Z",
+          "acknowledgedAt": "2026-11-03T14:57:05.440Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.8005897079999995,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2498.1585199194205,
+          "httpLatencyMs": {
+            "p50": 1.5787920000002487,
+            "p95": 13.090583999997762,
+            "p99": 15.308791999996174
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.08982212499999878,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "22.85MiB / 128MiB",
+            "rssKiB": 58668,
+            "rssHighWaterKiB": 73308,
+            "cpuUsageUsec": 2170846
+          },
+          "after": {
+            "dockerMemory": "23.14MiB / 128MiB",
+            "rssKiB": 59600,
+            "rssHighWaterKiB": 73308,
+            "cpuUsageUsec": 2817829
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "3688724d-6eda-4a99-b4b2-6264b2d6c8ac",
+        "startedAt": "2026-11-03T14:57:06.675Z",
+        "acknowledgedAt": "2026-11-03T14:57:06.782Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.1066875,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.2397920000003069,
+          "p95": 4.327666999997746,
+          "p99": 15.962832999997772
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.348916000002646,
+          "p95": 16.947917000004963,
+          "p99": 19.850500000000466
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "25.59MiB / 128MiB",
+          "rssKiB": 61148,
+          "rssHighWaterKiB": 73308,
+          "cpuUsageUsec": 2923201
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    },
+    {
+      "repeat": 3,
+      "image": "tiny-sentry:perf-before",
+      "stages": [
+        {
+          "run": "323f29b4-37f8-4456-af82-bacf08a2786c",
+          "startedAt": "2026-11-03T14:57:10.671Z",
+          "acknowledgedAt": "2026-11-03T14:57:11.153Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.48179312500000376,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4151.159276089679,
+          "httpLatencyMs": {
+            "p50": 1.0807090000016615,
+            "p95": 8.902874999999767,
+            "p99": 12.28191599999991
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.11505949999999575,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "19.95MiB / 128MiB",
+            "rssKiB": 57980,
+            "rssHighWaterKiB": 63164,
+            "cpuUsageUsec": 287501
+          },
+          "after": {
+            "dockerMemory": "24.44MiB / 128MiB",
+            "rssKiB": 61368,
+            "rssHighWaterKiB": 69316,
+            "cpuUsageUsec": 757261
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "783a5685-11ef-4baf-bc01-903589c1f748",
+          "startedAt": "2026-11-03T14:57:15.635Z",
+          "acknowledgedAt": "2026-11-03T14:57:16.445Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.8090774170000005,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2471.9513336756486,
+          "httpLatencyMs": {
+            "p50": 1.5695839999971213,
+            "p95": 13.325834000002942,
+            "p99": 15.805500000002212
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.09208237499999813,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "23.98MiB / 128MiB",
+            "rssKiB": 60372,
+            "rssHighWaterKiB": 71756,
+            "cpuUsageUsec": 2226325
+          },
+          "after": {
+            "dockerMemory": "25.8MiB / 128MiB",
+            "rssKiB": 61644,
+            "rssHighWaterKiB": 72052,
+            "cpuUsageUsec": 2882787
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "4498cc76-caac-4cc1-971d-7ae3db85ae05",
+        "startedAt": "2026-11-03T14:57:17.670Z",
+        "acknowledgedAt": "2026-11-03T14:57:17.795Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.12493762499999866,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.2326669999965816,
+          "p95": 14.78729100000055,
+          "p99": 18.004416999996465
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.3941670000058366,
+          "p95": 20.085500000001048,
+          "p99": 23.000874999997905
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "22.24MiB / 128MiB",
+          "rssKiB": 58284,
+          "rssHighWaterKiB": 72052,
+          "cpuUsageUsec": 2992693
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    },
+    {
+      "repeat": 3,
+      "image": "tiny-sentry:perf-retention",
+      "stages": [
+        {
+          "run": "5f5defd5-6e20-4a62-a13f-5a1e304eeb13",
+          "startedAt": "2026-11-03T14:57:21.685Z",
+          "acknowledgedAt": "2026-11-03T14:57:22.122Z",
+          "workload": {
+            "name": "below-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.4372523329999967,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 4574.017904668367,
+          "httpLatencyMs": {
+            "p50": 1.001790999995137,
+            "p95": 7.875457999994978,
+            "p99": 10.5064579999962
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.10540729100000316,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "20.96MiB / 128MiB",
+            "rssKiB": 58956,
+            "rssHighWaterKiB": 65420,
+            "cpuUsageUsec": 267493
+          },
+          "after": {
+            "dockerMemory": "23.77MiB / 128MiB",
+            "rssKiB": 60588,
+            "rssHighWaterKiB": 69476,
+            "cpuUsageUsec": 689961
+          },
+          "retained": {
+            "events": 3000,
+            "issues": 20
+          }
+        },
+        {
+          "run": "e81da679-3b33-4d1a-8cf8-58479f09b26a",
+          "startedAt": "2026-11-03T14:57:26.420Z",
+          "acknowledgedAt": "2026-11-03T14:57:27.232Z",
+          "workload": {
+            "name": "at-cap",
+            "count": 2000,
+            "concurrency": 8,
+            "eventBytes": 2048,
+            "groups": 10
+          },
+          "seconds": 0.8118113750000048,
+          "status": {
+            "200": 2000
+          },
+          "accepted": 2000,
+          "acceptedPerSecond": 2463.626479734887,
+          "httpLatencyMs": {
+            "p50": 1.3913329999995767,
+            "p95": 13.909915999996883,
+            "p99": 16.725834000004397
+          },
+          "verified": 2000,
+          "missing": 0,
+          "verificationSeconds": 0.09940554200000043,
+          "note": "HTTP latency measures acknowledgement. Verification is a separate post-load scan, not per-event processing latency.",
+          "before": {
+            "dockerMemory": "21.9MiB / 128MiB",
+            "rssKiB": 58028,
+            "rssHighWaterKiB": 69656,
+            "cpuUsageUsec": 1846841
+          },
+          "after": {
+            "dockerMemory": "23.36MiB / 128MiB",
+            "rssKiB": 59924,
+            "rssHighWaterKiB": 72068,
+            "cpuUsageUsec": 2447687
+          },
+          "retained": {
+            "events": 10000,
+            "issues": 30
+          }
+        }
+      ],
+      "visibility": {
+        "run": "604331b5-9dfe-46cb-aea2-bf3b9fc201be",
+        "startedAt": "2026-11-03T14:57:28.449Z",
+        "acknowledgedAt": "2026-11-03T14:57:28.562Z",
+        "workload": {
+          "name": "paired-visibility",
+          "count": 200,
+          "concurrency": 8,
+          "eventBytes": 2048,
+          "groups": 10
+        },
+        "seconds": 0.11332454200000211,
+        "status": {
+          "200": 200
+        },
+        "accepted": 200,
+        "httpLatencyMs": {
+          "p50": 1.0853340000030585,
+          "p95": 12.962707999999111,
+          "p99": 15.132917000002635
+        },
+        "verified": 200,
+        "missing": 0,
+        "queries": 200,
+        "timeToQueryMs": {
+          "p50": 2.1942909999997937,
+          "p95": 16.87825000000157,
+          "p99": 24.173416999998153
+        },
+        "note": "Separate paired POST/GET workload; time from POST start through successful matching GET, including acknowledgement, API cost and 5ms polling. Not ingestion capacity."
+      },
+      "final": {
+        "snapshot": {
+          "dockerMemory": "25.7MiB / 128MiB",
+          "rssKiB": 61748,
+          "rssHighWaterKiB": 72068,
+          "cpuUsageUsec": 2540882
+        },
+        "retained": {
+          "events": 10000,
+          "issues": 40
+        }
+      }
+    }
+  ]
+}

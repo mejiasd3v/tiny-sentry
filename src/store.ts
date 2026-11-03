@@ -17,6 +17,7 @@ export interface Issue {
 }
 
 export interface Notice { kind: "new_issue" | "regression"; issue: Issue }
+export interface Ingestion { project: string; events: PreparedEvent[]; receivedAt: number }
 
 export class Store {
   private db: Database;
@@ -26,13 +27,13 @@ export class Store {
     this.db = new Database(config.dbPath, { create: true, strict: true });
     try {
       const version = this.db.query<{ user_version: number }, []>("PRAGMA user_version").get()!.user_version;
-      if (version > 1) throw new Error("Database schema is newer than this tiny-sentry version");
+      if (version > 2) throw new Error("Database schema is newer than this tiny-sentry version");
       this.db.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;");
       const pageSize = this.db.query<{ page_size: number }, []>("PRAGMA page_size").get()!.page_size;
       const maxPages = Math.floor(config.maxDbMb * 1024 * 1024 / pageSize);
       const actual = this.db.query<{ max_page_count: number }, []>(`PRAGMA max_page_count=${maxPages}`).get()!.max_page_count;
       if (actual > maxPages) throw new Error("Existing database exceeds MAX_DB_MB; raise the limit or prune it first");
-      this.db.exec(`
+      this.db.transaction(() => this.db.exec(`
         CREATE TABLE IF NOT EXISTS issues (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           project_id TEXT NOT NULL,
@@ -58,8 +59,21 @@ export class Store {
         CREATE INDEX IF NOT EXISTS events_age ON events(received_at);
         CREATE INDEX IF NOT EXISTS events_issue ON events(issue_id, received_at DESC);
         CREATE INDEX IF NOT EXISTS issues_project ON issues(project_id, last_seen DESC);
-        PRAGMA user_version=1;
-      `);
+        CREATE TABLE IF NOT EXISTS retention_state (
+          id INTEGER PRIMARY KEY CHECK (id=1),
+          event_count INTEGER NOT NULL CHECK (event_count>=0)
+        );
+        INSERT OR IGNORE INTO retention_state SELECT 1, COUNT(*) FROM events;
+        CREATE TRIGGER IF NOT EXISTS events_insert_count AFTER INSERT ON events BEGIN
+          UPDATE retention_state SET event_count=event_count+1 WHERE id=1;
+        END;
+        CREATE TRIGGER IF NOT EXISTS events_delete_cleanup AFTER DELETE ON events BEGIN
+          UPDATE retention_state SET event_count=event_count-1 WHERE id=1;
+          DELETE FROM issues WHERE id=old.issue_id
+            AND NOT EXISTS (SELECT 1 FROM events WHERE issue_id=old.issue_id);
+        END;
+        PRAGMA user_version=2;
+      `)).immediate();
     } catch (error) {
       this.db.close();
       throw error;
@@ -67,39 +81,52 @@ export class Store {
   }
 
   ingest(project: string, events: PreparedEvent[], now = Date.now()): Notice[] {
-    return this.db.transaction(() => {
-      const notices = new Map<number, Notice>();
-      for (const event of events) {
-        if (this.db.query("SELECT 1 FROM events WHERE project_id=? AND event_id=?").get(project, event.id)) continue;
-        const previous = this.db.query<Issue, [string, string]>("SELECT * FROM issues WHERE project_id=? AND fingerprint=?").get(project, event.fingerprint);
-        const issue = this.db.query<Issue, [string, string, string, string, number, number]>(`
-          INSERT INTO issues(project_id,fingerprint,title,level,first_seen,last_seen,event_count)
-          VALUES (?,?,?,?,?,?,1)
-          ON CONFLICT(project_id,fingerprint) DO UPDATE SET
-            title=excluded.title, level=excluded.level, last_seen=excluded.last_seen,
-            event_count=issues.event_count+1, status='unresolved'
-          RETURNING *
-        `).get(project, event.fingerprint, event.title, event.level, now, now)!;
-        this.db.query("INSERT INTO events VALUES (?,?,?,?,?,?,?)").run(project, event.id, issue.id, now, event.environment, event.release, event.payload);
-        if (!previous || previous.status === "resolved") {
-          notices.set(issue.id, { kind: previous ? "regression" : "new_issue", issue });
-        } else if (notices.has(issue.id)) {
-          notices.get(issue.id)!.issue = issue;
-        }
+    return this.db.transaction(() => this.write(project, events, now)).immediate();
+  }
+
+  private write(project: string, events: PreparedEvent[], now: number): Notice[] {
+    const notices = new Map<number, Notice>();
+    for (const event of events) {
+      if (this.db.query("SELECT 1 FROM events WHERE project_id=? AND event_id=?").get(project, event.id)) continue;
+      const previous = this.db.query<Issue, [string, string]>("SELECT * FROM issues WHERE project_id=? AND fingerprint=?").get(project, event.fingerprint);
+      const issue = this.db.query<Issue, [string, string, string, string, number, number]>(`
+        INSERT INTO issues(project_id,fingerprint,title,level,first_seen,last_seen,event_count)
+        VALUES (?,?,?,?,?,?,1)
+        ON CONFLICT(project_id,fingerprint) DO UPDATE SET
+          title=excluded.title, level=excluded.level, last_seen=excluded.last_seen,
+          event_count=issues.event_count+1, status='unresolved'
+        RETURNING *
+      `).get(project, event.fingerprint, event.title, event.level, now, now)!;
+      this.db.query("INSERT INTO events VALUES (?,?,?,?,?,?,?)").run(project, event.id, issue.id, now, event.environment, event.release, event.payload);
+      if (!previous || previous.status === "resolved") {
+        notices.set(issue.id, { kind: previous ? "regression" : "new_issue", issue });
+      } else if (notices.has(issue.id)) {
+        notices.get(issue.id)!.issue = issue;
       }
-      this.prune(now);
-      return [...notices.values()];
-    }).immediate();
+    }
+    this.pruneEvents(now);
+    return [...notices.values()];
+  }
+
+  ingestBatch(requests: Ingestion[]): Notice[][] {
+    return this.db.transaction(() => requests.map(({ project, events, receivedAt }) =>
+      this.write(project, events, receivedAt),
+    )).immediate();
   }
 
   prune(now = Date.now()) {
-    this.db.transaction(() => {
-      this.db.query("DELETE FROM events WHERE received_at < ?").run(now - this.config.retentionDays * 86_400_000);
-      this.db.query(`DELETE FROM events WHERE rowid IN (
-        SELECT rowid FROM events ORDER BY received_at DESC, rowid DESC LIMIT -1 OFFSET ?
-      )`).run(this.config.maxEvents);
-      this.db.exec("DELETE FROM issues WHERE NOT EXISTS (SELECT 1 FROM events WHERE events.issue_id=issues.id)");
-    })();
+    this.db.transaction(() => this.pruneEvents(now)).immediate();
+  }
+
+  private pruneEvents(now: number) {
+    this.db.query("DELETE FROM events WHERE received_at < ?").run(now - this.config.retentionDays * 86_400_000);
+    const { event_count } = this.db.query<{ event_count: number }, []>(
+      "SELECT event_count FROM retention_state WHERE id=1",
+    ).get()!;
+    const excess = event_count - this.config.maxEvents;
+    if (excess > 0) this.db.query(`DELETE FROM events WHERE rowid IN (
+      SELECT rowid FROM events ORDER BY received_at, rowid LIMIT ?
+    )`).run(excess);
   }
 
   issues(project: string | null, status: string | null, limit: number, offset: number) {
