@@ -1,0 +1,22 @@
+{
+  "name": "tiny-sentry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Small, headless Sentry-compatible error tracking for personal projects.",
+  "license": "MIT",
+  "packageManager": "bun@1.4.2",
+  "engines": { "bun": ">=1.4.2" },
+  "scripts": {
+    "start": "bun src/server.ts",
+    "dev": "bun --watch src/server.ts",
+    "cli": "bun src/cli.ts",
+    "setup": "bun scripts/setup.ts",
+    "test": "bun test",
+    "test:container": "bun scripts/container-check.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run typecheck && bun test"
+  },
+  "dependencies": { "hono": "4.13.16" },
+  "devDependencies": { "@types/bun": "1.4.4", "typescript": "5.9.3" }
+}
