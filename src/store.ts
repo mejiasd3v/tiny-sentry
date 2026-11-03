@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Config } from "./config";
 import type { PreparedEvent } from "./event";
+import { Outbox } from "./integrations/outbox";
 
 export interface Issue {
   id: number;
@@ -21,13 +22,14 @@ export interface Ingestion { project: string; events: PreparedEvent[]; receivedA
 
 export class Store {
   private db: Database;
+  readonly outbox: Outbox;
 
   constructor(private config: Config) {
     if (config.dbPath !== ":memory:") mkdirSync(dirname(config.dbPath), { recursive: true });
     this.db = new Database(config.dbPath, { create: true, strict: true });
     try {
       const version = this.db.query<{ user_version: number }, []>("PRAGMA user_version").get()!.user_version;
-      if (version > 2) throw new Error("Database schema is newer than this tiny-sentry version");
+      if (version > 3) throw new Error("Database schema is newer than this tiny-sentry version");
       this.db.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;");
       const pageSize = this.db.query<{ page_size: number }, []>("PRAGMA page_size").get()!.page_size;
       const maxPages = Math.floor(config.maxDbMb * 1024 * 1024 / pageSize);
@@ -72,8 +74,26 @@ export class Store {
           DELETE FROM issues WHERE id=old.issue_id
             AND NOT EXISTS (SELECT 1 FROM events WHERE issue_id=old.issue_id);
         END;
-        PRAGMA user_version=2;
+        CREATE TABLE IF NOT EXISTS integration_deliveries (
+          id TEXT PRIMARY KEY,
+          integration_id TEXT NOT NULL,
+          revision TEXT NOT NULL,
+          issue_id INTEGER NOT NULL,
+          kind TEXT NOT NULL,
+          payload TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (status IN ('pending','delivering','delivered','failed','cancelled')),
+          attempts INTEGER NOT NULL DEFAULT 0,
+          available_at INTEGER NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          lease TEXT
+        );
+        CREATE INDEX IF NOT EXISTS deliveries_due ON integration_deliveries(status,available_at);
+        CREATE TABLE IF NOT EXISTS integration_state (id INTEGER PRIMARY KEY CHECK (id=1), dropped INTEGER NOT NULL);
+        INSERT OR IGNORE INTO integration_state VALUES (1,0);
+        PRAGMA user_version=3;
       `)).immediate();
+      this.outbox = new Outbox(this.db, config.maxDeliveries);
     } catch (error) {
       this.db.close();
       throw error;
@@ -98,6 +118,7 @@ export class Store {
         RETURNING *
       `).get(project, event.fingerprint, event.title, event.level, now, now)!;
       this.db.query("INSERT INTO events VALUES (?,?,?,?,?,?,?)").run(project, event.id, issue.id, now, event.environment, event.release, event.payload);
+      if (this.config.integrations.length) this.outbox.enqueue(this.config.integrations, issue, previous, now);
       if (!previous || previous.status === "resolved") {
         notices.set(issue.id, { kind: previous ? "regression" : "new_issue", issue });
       } else if (notices.has(issue.id)) {

@@ -29,7 +29,7 @@ function issueId(c: Context) {
   return id;
 }
 
-export function createApp(config: Config, store: Store) {
+export function createApp(config: Config, store: Store, wakeIntegrations: () => void = () => {}) {
   const app = new Hono();
   const persist = createIngestor(store, config.maxRequestBytes * 2);
   const buckets = new Map<string, { window: number; count: number }>();
@@ -122,6 +122,7 @@ export function createApp(config: Config, store: Store) {
     }
     const notices = await persist(project, events);
     void notify(notices);
+    if (config.integrations.length) wakeIntegrations();
     return c.json({ id: events[0]?.id ?? null });
   }
   app.post("/api/:project/envelope", ingest);
@@ -140,6 +141,21 @@ export function createApp(config: Config, store: Store) {
 
   app.get("/api/projects", (c) => c.json({ projects: Object.keys(config.projects).map((id) => ({ id })) }));
   app.get("/api/stats", (c) => c.json(store.stats()));
+  app.get("/api/integrations", (c) => c.json({
+    integrations: config.integrations.map(({ id, type, trigger, projects, levels }) => ({ id, type, trigger, projects, levels })),
+    ...store.outbox.stats(),
+  }));
+  app.get("/api/integrations/deliveries", (c) => {
+    const { limit, offset } = pagination(c);
+    return c.json({ deliveries: store.outbox.list(limit, offset), limit, offset });
+  });
+  app.post("/api/integrations/deliveries/:id/retry", (c) => {
+    if (!store.outbox.retry(c.req.param("id"), config.integrations)) {
+      throw new HTTPException(409, { message: "Only failed deliveries for an unchanged, configured integration can be retried" });
+    }
+    wakeIntegrations();
+    return c.json({ status: "pending" });
+  });
   app.get("/api/issues", (c) => {
     const { limit, offset } = pagination(c);
     const status = c.req.query("status") ?? null;

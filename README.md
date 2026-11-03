@@ -47,7 +47,7 @@ The Dockerfile supplies the start command and Railway's `PORT` is respected. The
 
 Start with the defaults: 14-day retention, 10,000 events across all projects, a 256 MiB SQLite page limit, and 120 ingestion requests per project per minute. One envelope can contain up to 100 items. Disable tracing, replay, profiling, and SDK log collection in clients, so they do not send data you will discard.
 
-Railway's **Serverless** setting can let an idle service sleep. This service has no periodic outbound polling. Waking adds latency and can exceed a short SDK flush deadline, especially when reporting from a short-lived process. Keep it always on if delivery matters more than the idle savings. Persistent data stays on the volume through sleep.
+Railway's **Serverless** setting can let an idle service sleep. This service has no periodic outbound polling. Waking adds latency and can exceed a short SDK flush deadline, especially when reporting from a short-lived process. Optional integration retries may also wait until the service wakes. Keep it always on if delivery matters more than the idle savings. Persistent data stays on the volume through sleep.
 
 The original Bun 1.4.2 Linux ARM64 runs measured about **43 MiB of process RSS at idle** and a **75 MiB high-water mark under load**, inside a 128 MiB container limit. See the [memory analysis and scoped Sentry benchmark](benchmarks/README.md) and [Bun 1.4.4 optimization measurements](benchmarks/PERFORMANCE.md) for workloads, raw results, and limitations.
 
@@ -146,20 +146,35 @@ The API uses `Authorization: Bearer <ADMIN_TOKEN>`:
 | GET | `/api/issues/:id/events?limit=25&offset=0` | Retained event metadata |
 | PATCH | `/api/issues/:id` | Set `{"status":"resolved"}` or `{"status":"unresolved"}` |
 | GET | `/api/projects/:project/events/:event_id` | Full scrubbed event |
+| GET | `/api/integrations` | Configured integration metadata and delivery counts |
+| GET | `/api/integrations/deliveries` | Recent delivery status; supports `limit` and `offset` |
+| POST | `/api/integrations/deliveries/:id/retry` | Retry a failed delivery for an unchanged rule |
 
 Page size is 1-100. `first_seen`, `last_seen`, and `received_at` are Unix milliseconds recorded by the server. The SDK's original timestamp remains in the event JSON.
 
 ## Notifications
 
-New issues and regressions produce structured JSON lines in Railway logs. Repeated occurrences of an unresolved issue do not produce another notice. Event payloads, keys, and admin tokens are not logged.
+New issues and regressions produce structured JSON lines in Railway logs. Repeated occurrences of an unresolved issue do not produce another log notice. Event payloads, keys, and admin tokens are not logged.
 
-Optionally set `WEBHOOK_URL` to receive a JSON POST:
+Optional integrations can create **GitHub, Linear, or Jira Cloud issues**, send **Telegram or Discord messages**, or call **custom webhooks**. Configure a rule to fire on a new issue, a regression, or an issue reaching an occurrence threshold. Project and level filters are supported. Deliveries use a bounded SQLite queue, background requests, retries, and CLI/API status inspection. No additional dependencies or services are required.
+
+For example, set `INTEGRATIONS` and a server-only `GITHUB_ISSUES_TOKEN` to create an issue on the tenth occurrence:
+
+```json
+[{"id":"github-after-ten","type":"github","projects":["1"],"trigger":{"type":"threshold","count":10},"options":{"repository":"mejiasd3v/my-project","tokenEnv":"GITHUB_ISSUES_TOKEN"}}]
+```
+
+Integrations are off by default. See the [integration guide](docs/integrations.md) for all providers, trigger semantics, credentials, queue limits, duplicate-delivery risks, and the local TypeScript plugin interface. Provider requests run outside ingestion; queue writes share the event transaction.
+
+### Legacy webhook
+
+The existing `WEBHOOK_URL` option remains available as a simple best-effort JSON POST:
 
 ```json
 {"kind":"new_issue","issue":{"id":42,"project_id":"1","title":"TypeError: Something broke","status":"unresolved","event_count":1}}
 ```
 
-The issue also includes fingerprint, level, and timestamps. Set `WEBHOOK_TOKEN` to attach an `Authorization: Bearer ...` header. Use a receiver that accepts this JSON format; Slack and Discord expect their own payload formats. Delivery is **best effort**, with a five-second timeout, at most four requests in flight, no retries, and no durable queue. Failures appear in logs and never undo an accepted event. Do not rely on it for guaranteed paging.
+The issue also includes fingerprint, level, and timestamps. Set `WEBHOOK_TOKEN` to attach an `Authorization: Bearer ...` header. Delivery is **best effort**, with a five-second timeout, at most four requests in flight, no retries, and no durable queue. Failures appear in logs and never undo an accepted event. Use an integration of type `webhook` for durable retries and signing, or `discord` for Discord's payload format. Remove the legacy variables when migrating to avoid sending through both mechanisms.
 
 ## Configuration
 
@@ -177,13 +192,16 @@ The issue also includes fingerprint, level, and timestamps. Set `WEBHOOK_TOKEN` 
 | `RATE_LIMIT_PER_MINUTE` | `120` | Ingestion requests per project per fixed minute |
 | `WEBHOOK_URL` | Unset | Optional HTTP(S) notification receiver |
 | `WEBHOOK_TOKEN` | Unset | Optional webhook bearer token |
+| `INTEGRATIONS` | Unset | Optional JSON array of integration rules; [guide](docs/integrations.md) |
+| `INTEGRATIONS_MODULE` | Unset | Local TS module exporting custom provider plugins |
+| `MAX_DELIVERIES` | `1000` | Cap for queued deliveries plus recent terminal history |
 | `TINY_SENTRY_URL` | `http://localhost:3000` | CLI target; not used by the server |
 
 Retention runs at startup, hourly, and after ingestion. The oldest events are removed first; groups disappear when no retained events remain. Counts on an existing group include pruned occurrences. Deleted SQLite pages are reused; the database file does not automatically shrink. The page cap excludes WAL/SHM files and backups, so leave volume headroom. A full database returns HTTP 507 rather than acknowledging an unsaved error. The database must fit the configured cap at startup.
 
 Concurrent ingestion requests can share a SQLite commit, with up to 32 requests and a waiting payload budget of twice `MAX_REQUEST_BYTES`. An individual request larger than that budget flushes immediately. Batching uses the next event-loop turn with no fixed timer delay. Responses wait for the commit; if it fails, every request sharing that commit fails and can be retried. Retention and deduplication still run in request order inside the transaction. SQLite uses WAL with `synchronous=NORMAL`, which does not guarantee survival of host power loss.
 
-Startup automatically upgrades existing databases to schema version 2, adding transactional retention counters and cleanup triggers. Older tiny-sentry versions refuse to open this schema. Keep a pre-upgrade backup if you need to roll back to an older image.
+Startup automatically upgrades existing databases to schema version 3, including transactional retention counters, cleanup triggers, and integration delivery tables. Older tiny-sentry versions refuse to open this schema. Keep a pre-upgrade backup if you need to roll back to an older image.
 
 Limits protect small deployments; they do not provide abuse protection for a publicly known DSN. Requests with bad keys to a known project count against its rate limit. Sentry-compatible `429` responses include retry headers. Use edge access controls if you need stronger abuse protection. Management tokens have access to every project on this instance; there are no user accounts or per-project admin permissions.
 
@@ -207,6 +225,6 @@ docker build -t tiny-sentry:verify .
 bun run test:container
 ```
 
-Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, and consistent backups. The container check verifies Linux startup, network body limits, graceful stop, and persistence across container recreation. CI runs both. The real-SDK smoke checks described above used temporary installations outside this repository; Sentry SDKs are not service dependencies.
+Tests exercise the HTTP protocol, authentication and privacy boundaries, grouping and regression handling, pagination, retention, database reopen, consistent backups, and integration triggers, delivery, and recovery. See the [integration verification scope](docs/integrations.md#verification-scope) for the limits of provider tests. The container check verifies Linux startup, network body limits, graceful stop, and persistence across container recreation. CI runs both. The real-SDK smoke checks described above used temporary installations outside this repository; Sentry SDKs are not service dependencies.
 
 MIT licensed. This project is independent of Sentry and is not affiliated with or endorsed by Sentry.

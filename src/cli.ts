@@ -12,6 +12,9 @@ const help = `tiny-sentry CLI
   bun run cli resolve <issue-id>
   bun run cli reopen <issue-id>
   bun run cli stats
+  bun run cli integrations
+  bun run cli deliveries [--limit 25] [--offset 0]
+  bun run cli retry-delivery <delivery-id>
   bun run cli backup <new-file-path>     Local database; run inside the service
 
 Set TINY_SENTRY_URL (default http://localhost:3000) and ADMIN_TOKEN.
@@ -37,15 +40,22 @@ async function main() {
   switch (command) {
     case "projects": path = "/api/projects"; break;
     case "stats": path = "/api/stats"; break;
-    case "issues": {
+    case "integrations": path = "/api/integrations"; break;
+    case "retry-delivery":
+      if (!argument || !/^[a-f\d-]{36}$/i.test(argument)) throw new Error("Provide a delivery UUID");
+      path = `/api/integrations/deliveries/${argument}/retry`;
+      init.method = "POST";
+      break;
+    case "deliveries": case "issues": {
       const args = [argument, ...options].filter((value): value is string => value !== undefined);
       const query = new URLSearchParams();
       for (let index = 0; index < args.length; index += 2) {
         const name = args[index]!.replace(/^--/, "");
-        if (!["project", "status", "limit", "offset"].includes(name) || !args[index + 1]) throw new Error("Invalid issues option");
+        const allowed = command === "issues" ? ["project", "status", "limit", "offset"] : ["limit", "offset"];
+        if (!allowed.includes(name) || !args[index + 1]) throw new Error("Invalid list option");
         query.set(name, args[index + 1]!);
       }
-      path = `/api/issues?${query}`;
+      path = `/api/${command === "issues" ? "issues" : "integrations/deliveries"}?${query}`;
       break;
     }
     case "show": case "events": case "resolve": case "reopen": {

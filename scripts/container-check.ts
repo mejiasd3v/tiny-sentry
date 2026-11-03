@@ -10,7 +10,8 @@ const envFile = join(directory, "env");
 const key = "a".repeat(32);
 const admin = "b".repeat(64);
 mkdirSync(data);
-writeFileSync(envFile, `ADMIN_TOKEN=${admin}\nSENTRY_PROJECTS={"1":"${key}"}\nMAX_REQUEST_BYTES=2048\nMAX_EVENT_BYTES=1024\n`, { mode: 0o600 });
+const integrations = [{ id: "smoke", type: "webhook", trigger: { type: "new_issue" }, options: { url: "http://127.0.0.1:1" } }];
+writeFileSync(envFile, `ADMIN_TOKEN=${admin}\nSENTRY_PROJECTS={"1":"${key}"}\nMAX_REQUEST_BYTES=2048\nMAX_EVENT_BYTES=1024\nINTEGRATIONS=${JSON.stringify(integrations)}\n`, { mode: 0o600 });
 let container: string | undefined;
 
 async function docker(...args: string[]) {
@@ -41,6 +42,11 @@ try {
   });
   assert.equal(response.status, 200);
   const { id } = await response.json() as { id: string };
+  response = await fetch(`${url}/api/integrations/deliveries`, { headers: { Authorization: `Bearer ${admin}` } });
+  assert.equal(response.status, 200);
+  const { deliveries } = await response.json() as { deliveries: { id: string; kind: string }[] };
+  assert.equal(deliveries.length, 1);
+  assert.equal(deliveries[0]!.kind, "new_issue");
   response = await fetch(`${url}/api/1/store/?sentry_key=${key}`, { method: "POST", body: "x".repeat(3000) });
   assert.equal(response.status, 413, "Bun's network layer must reject oversized requests");
   const snapshot = await docker("stats", "--no-stream", "--format", "{{.MemUsage}}", container!);
@@ -52,7 +58,10 @@ try {
   assert.equal(response.status, 200);
   const saved = await response.json() as { event: { message: string } };
   assert.equal(saved.event.message, "Linux container smoke test");
-  console.log("PASS: container health, ingestion, request limit, graceful stop, and persistence across recreation");
+  const restored = JSON.parse(await docker("exec", container!, "bun", "src/cli.ts", "deliveries")) as { deliveries: { id: string }[] };
+  assert.equal(restored.deliveries.length, 1);
+  assert.equal(restored.deliveries[0]!.id, deliveries[0]!.id, "Outbox jobs must survive container recreation");
+  console.log("PASS: container health, ingestion, request limit, graceful stop, CLI, and event/outbox persistence across recreation");
 } finally {
   if (container) await docker("stop", container);
   rmSync(directory, { recursive: true, force: true });

@@ -1,3 +1,6 @@
+import { parseIntegrations } from "./integrations/config";
+import type { IntegrationRule } from "./integrations/types";
+
 export interface Config {
   adminToken: string;
   projects: Record<string, string>;
@@ -11,6 +14,9 @@ export interface Config {
   rateLimitPerMinute: number;
   webhookUrl?: string;
   webhookToken?: string;
+  integrations: IntegrationRule[];
+  integrationsModule?: string;
+  maxDeliveries: number;
 }
 
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
@@ -56,5 +62,8 @@ export function loadConfig(env: Record<string, string | undefined> = process.env
     rateLimitPerMinute: integer("RATE_LIMIT_PER_MINUTE", 120, 1_000_000),
     webhookUrl: env.WEBHOOK_URL || undefined,
     webhookToken: env.WEBHOOK_TOKEN || undefined,
+    integrations: parseIntegrations(env.INTEGRATIONS, projects),
+    integrationsModule: env.INTEGRATIONS_MODULE || undefined,
+    maxDeliveries: integer("MAX_DELIVERIES", 1000, 100_000),
   };
 }
